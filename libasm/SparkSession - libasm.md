@@ -1,5 +1,5 @@
 # Spark Session: libasm
-*updated: 12/03/2021*
+*updated: 01/04/2021*
 
 Project description:
 > Get familiar with assembly language
@@ -37,8 +37,9 @@ If you haven't already, install `nasm` on your system using the following comman
     - RSP is called the Stack Pointer and RBP is the Base Pointer. What do they do?
     - Lastly, 6 specific registers are used to pass parameters to functions. What are they and which arguments do they correspond to?
 5. There are certain registers whose values are preserved across function calls - **callee-saved registers** - and registers whose values are not preserved and must be saved if you want to make sure your values aren't changed - **caller-saved registers**. (10 mins)
-    - Which are the callee-saved registers? What do you have to do if you wish to use them?
+    - Which are the callee-saved registers?
     - Note that which registers are caller/callee-saved vary by system, thus ["calling conventions"](https://en.wikipedia.org/wiki/X86_calling_conventions#x86-64_calling_conventions).
+    - The convention states that the original values within callee-saved registers should be saved by the called function (the callee). The expectation is that those registers hold the same value after the called function returns. What does this mean if we wish to use a callee-saved register?
     - Here's a handy table with the registers and their usages: [link](https://stackoverflow.com/questions/18024672/what-registers-are-preserved-through-a-linux-x86-64-function-call)
 
 ***Break (5 mins)***
@@ -117,6 +118,7 @@ Now let's look at system calls or **syscall**s, which allow a program to request
     - For this exercise, we're going to call `write()` first to output our `text` onto **stdout**. Remember the instruction order for calling `exit()` earlier. What values do you need to move into which registers?
     - Finish with a call to `exit()` again like you did earlier.
     - Compile with the same commands you used earlier. Do you get "Hello, world!"?
+        - Note: your compiler may throw up some warnings, but if your program was compiled successfully, just ignore it!
 
 ## Stack Alignment
 Stack alignment can be a tricky thing to understand. What you need to know is that x86_64 requires that your stack be aligned on a 16-byte boundary.
