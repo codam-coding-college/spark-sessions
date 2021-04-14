@@ -1,5 +1,5 @@
 # Spark Session: minishell
-*updated: 08/04/2021*
+*updated: 14/04/2021*
 
 Project description:
 > Create a simple shell
@@ -16,7 +16,7 @@ Project description:
 Before we get into how to work with processes, it's handy to understand what we actually mean by "process".
 1. What is a process? (5 mins)
 
-A process is its own separate entity with its own defined memory space. This memory space is what is duplicated by `fork` and rewritten by `exec`, which we'll get to in a bit.  
+A process is its own separate entity with its own defined **memory space**. This memory space is what is duplicated by `fork` and rewritten by `exec`, which we'll get to in a bit.  
     Here's a diagram showing how this memory is divided:
     ![process memory](https://i.imgur.com/nxmmQl3.png)
 
@@ -27,20 +27,20 @@ This information includes the process ID, open files, its status, etc. You can r
 `fork()` creates a new process — called the **child process** — by duplicating the calling process (**the parent process**).
 1. What is the prototype of `fork()`? What does the function return? (10 mins)
     - How could you use the function return to identify if you are in the child or parent process?
-    - Is `fork`'s return the same as the child's PID?
+    - Is `fork`'s return the same as the child's PID? 
 2.  Which of the following is copied from the parent process to the child process? Which are not? (10 mins)
     - Data (the content of the process' memory space)
     - Location in memory
     - Process ID
     - Open file descriptors
-3. Let's see some of these characteristics in action. (15 mins)
+3. Let's see some of these characteristics in action. (20 mins)
     - Write a program that:
         - initialises an int `x` to **5**;
         - calls `fork()` and then prints its return value in a statement `"fork returned: %d\n"`;
         - checks for failed forks;
-        - if in the child process: **decrements** `x` by 1, prints `"This line is from child, x is %d\n"`, and then **returns** 0;
-        - else if in the parent process: **increments** `x` by 1 and then prints `"This line is from parent, x is %d\n"`.
-    - You should see how the data (the variable `x` in this case) starts with the same initial value in both processes, but that changes to this variable in one process does not affect the variable in another process.
+        - if in the **child** process: **decrements** `x` by 1, prints `"This line is from child, x is %d\n"`, and then **returns** 0;
+        - else if in the **parent** process: **increments** `x` by 1 and then prints `"This line is from parent, x is %d\n"`.
+    - You should see how the data (the variable `x` in this case) starts with the same initial value in both processes, but that changes to this variable in one process **does not affect** the variable in another process.
         ![example output](https://i.imgur.com/jOTXMCL.png)  
         *example output - your output order may vary*
     - Here we've specified that child should `return` when it's done. What happens if we comment that out? Try putting another `"x is %d"` statement at the **end of your main** to see. 
@@ -48,25 +48,25 @@ This information includes the process ID, open files, its status, etc. You can r
 
 In this case, the parent and the child process execute concurrently. The order of your output might also be jumbled between child and parent, depending on how your OS handles the processes.
 
+***Break (5 mins)***
+
 ### wait
-It's also possible to have your parent process wait on its child processes to terminate. You do this by calling `wait()` in the parent process. This [synchronises](https://flylib.com/books/en/1.311.1.42/1/) the parent and child process.
+It's also possible to have your parent process wait on its child processes to terminate. You do this by calling `wait()` in the parent process. This **[synchronises](https://flylib.com/books/en/1.311.1.42/1/)** the parent and child process.
 1. What is the prototype of `wait()`? What information is stored in the `int*` parameter that you pass to the function? (5 mins)
-2. Calling `wait()` (or `waitpid()`) in the parent process prevents what's called "zombie processes". What does this mean? (10 mins)
+2. Calling `wait()` (or `waitpid()`) in the parent process prevents what's called **"zombie processes"**. What does this mean? (10 mins)
 3. Let's add `wait()` to the code you wrote earlier. (10 mins)
     - Create an int variable, for example `w_status`, to be passed to `wait()`.
-    - In the parent process code block, call `wait()` before anything else. *Remember to pass it the address of your `w_status` int.*
-    - Make sure the child process is calling `return` when it's done.
-    - Use one of the macros to check if the child process terminated normally. If so, print `"Child process exited with status: %d\n"`. Use one of the other macros to get the exit status.
+    - In the **parent process** code block, call `wait()` before anything else. *Remember to pass it the address of your `w_status` int.*
+    - Make sure the **child process** is calling `return` when it's done.
+    - Use one of the macros to check if the child process **terminated normally**. If so, print `"Child process exited with status: %d\n"`. Use one of the other macros to get the exit status.
     - Try tweaking the argument you pass to the `return()` call in your child process. Does the output change accordingly?
         ![example output](https://i.imgur.com/cFZAZFp.png)  
         *example output*
 
 Here's a fun short explanation about zombie processes for later: [understanding zombie processes](https://youtu.be/xJ8KenZw2ag)
 
-***Break (5 mins)***
-
 ### execve
-The `exec()` family of functions allows us to replace the current process with a new program.  
+The `exec()` family of functions allows us to **replace** the current process with a new program.  
 No new process is created; the PID remains the same. The functions simply have the existing process execute a new program.
 1. What is the prototype of `execve()`? (10 mins)
     - Break down each of function parameters. What does each mean?
@@ -82,8 +82,10 @@ No new process is created; the PID remains the same. The functions simply have t
     - Below the `execv` call, place another print statement, `"This line is from child after execv"`.
     - Does your program execute `ls` with the `-l` list option when you run it? Does the "after execv" statement print?
 
+***Break (5 mins)***
+
 ### dup & dup2
-`dup()` and `dup2()` create a copy of a file descriptor.
+`dup()` and `dup2()` create a **copy** of a file descriptor.
 1. What is the prototype for `dup()`? What about `dup2()`? What do both return?  (5 mins)
 2. What are some differences between `dup` and `dup2` with regards to the new file descriptor? (5 mins)
     - Here's a diagram to help you visualise the functions better:
@@ -104,11 +106,10 @@ No new process is created; the PID remains the same. The functions simply have t
     - Call `write()` again, outputting `"This isn't being printed on stdout\n"` onto stdout (1).
     - Does anything get printed onto your terminal when you run the program?
 
-***Break (5 mins)***
-
+## Bonus
 ### pipe
 `pipe()` allows data to be passed from one process to another.  
-This "pipeline" between processes is unidirectional, meaning data flows in one direction.  
+This "pipeline" between processes is **unidirectional**, meaning data flows in one direction.  
 Therefore, you have one end of the pipe that reads data and one end of the pipe that writes data.
     ![one-way pipe](https://www.tutorialspoint.com/inter_process_communication/images/pipe_with_one.jpg)
 1. What is the prototype of `pipe()`? What is being stored in the int array you're passing it? (10 mins)
@@ -130,15 +131,16 @@ Therefore, you have one end of the pipe that reads data and one end of the pipe 
         -  writes a newline to stdout;
         -  **closes** the remaining pipe end.
     ![pipe example](https://i.imgur.com/40cUyDo.png)
-4. Bonus question: why do we close the pipe ends we don't use at the start? Why do we close the pipe end we used after we're done?
+4. Why do we close the **pipe ends we don't use** at the start? Why do we close the pipe end we used after we're done?
     ![closing ends](https://chensunmac.gitbooks.io/csc209-practical-programming/content/assets/pipe2.png)
 
 That was a simple exercise to show you how data can be passed through pipes and interacted with within child processes.  
 
 Things get even more mind-blowing when you throw `dup`/`dup2` into the mix.  
 
+## Tips
 Here's a more detailed explanation about data flows through pipes, with handy diagrams: [pipes, forks, & dups](http://www.rozmichelle.com/pipes-forks-dups/)
 
-Things that we couldn't cover today but that would be helpful to look into for your project:
+And here's a couple other things that could be helpful to look into for your project:
 - abstract syntax tree
 - finite state machines

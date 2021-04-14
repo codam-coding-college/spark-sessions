@@ -1,5 +1,5 @@
 # Spark Session: minishell
-*updated: 08/04/2021*
+*updated: 14/04/2021*
 
 Project description:
 > Create a simple shell
@@ -19,7 +19,7 @@ Before we get into how to work with processes, it's handy to understand what we 
     > processes are identified by their unique process IDs (which is recycled after a process terminates).  
     > the two main system calls to create a process are fork and exec.
 
-A process is its own separate entity with its own defined memory space. This memory space is what is duplicated by `fork` and rewritten by `exec`, which we'll get to in a bit.  
+A process is its own separate entity with its own defined **memory space**. This memory space is what is duplicated by `fork` and rewritten by `exec`, which we'll get to in a bit.  
     Here's a diagram showing how this memory is divided:
     ![process memory](https://i.imgur.com/nxmmQl3.png)
 
@@ -46,14 +46,14 @@ This information includes the process ID, open files, its status, etc. You can r
     > Location in memory: not same - separate memory spaces  
     > Process ID: not same - child has unique PID that doesn't match any of existing process group or session  
     > Open FDs: same - child inherits copies of the parent's set of open file descriptors. Each FD in the child refers to the same open FD as the corresponding FD in the parent.
-3. Let's see some of these characteristics in action. (15 mins)
+3. Let's see some of these characteristics in action. (20 mins)
     - Write a program that:
         - initialises an int `x` to **5**;
         - calls `fork()` and then prints its return value in a statement `"fork returned: %d\n"`;
         - checks for failed forks;
-        - if in the child process: **decrements** `x` by 1, prints `"This line is from child, x is %d\n"`, and then **returns** 0;
-        - else if in the parent process: **increments** `x` by 1 and then prints `"This line is from parent, x is %d\n"`.
-    - You should see how the data (the variable `x` in this case) starts with the same initial value in both processes, but that changes to this variable in one process does not affect the variable in another process.
+        - if in the **child** process: **decrements** `x` by 1, prints `"This line is from child, x is %d\n"`, and then **returns** 0;
+        - else if in the **parent** process: **increments** `x` by 1 and then prints `"This line is from parent, x is %d\n"`.
+    - You should see how the data (the variable `x` in this case) starts with the same initial value in both processes, but that changes to this variable in one process **does not affect** the variable in another process.
         ![example output](https://i.imgur.com/jOTXMCL.png)  
         *example output - your output order may vary*
     - Here we've specified that child should `return` when it's done. What happens if we comment that out? Try putting another `"x is %d"` statement at the **end of your main** to see. 
@@ -61,19 +61,21 @@ This information includes the process ID, open files, its status, etc. You can r
 
 In this case, the parent and the child process execute concurrently. The order of your output might also be jumbled between child and parent, depending on how your OS handles the processes.
 
+***Break (5 mins)***
+
 ### wait
-It's also possible to have your parent process wait on its child processes to terminate. You do this by calling `wait()` in the parent process. This [synchronises](https://flylib.com/books/en/1.311.1.42/1/) the parent and child process.
+It's also possible to have your parent process wait on its child processes to terminate. You do this by calling `wait()` in the parent process. This **[synchronises](https://flylib.com/books/en/1.311.1.42/1/)** the parent and child process.
 1. What is the prototype of `wait()`? What information is stored in the `int*` parameter that you pass to the function? (5 mins)
     > `pid_t wait(int *wstatus);`  
     > if not NULL, `wstatus` contains the child process' status information, which can be checked with macros like `WIFSIGNALED` and `WIFEXITED`.
-2. Calling `wait()` (or `waitpid()`) in the parent process prevents what's called "zombie processes". What does this mean? (10 mins)
+2. Calling `wait()` (or `waitpid()`) in the parent process prevents what's called **"zombie processes"**. What does this mean? (10 mins)
     > Calling these functions collects the child's exit status from the kernel process table ("reaps" it), allowing the system to release the child's resources if it has terminated.  
     > Not performing wait in the parent process leaves the terminated child in a zombie state. Because the kernel continues to keep info about the terminated child process and this takes up space. If you have too many of these, you could run out of space for new processes.
 3. Let's add `wait()` to the code you wrote earlier. (10 mins)
     - Create an int variable, for example `w_status`, to be passed to `wait()`.
-    - In the parent process code block, call `wait()` before anything else. *Remember to pass it the address of your `w_status` int.*
-    - Make sure the child process is calling `return` when it's done.
-    - Use one of the macros to check if the child process terminated normally. If so, print `"Child process exited with status: %d\n"`. Use one of the other macros to get the exit status.
+    - In the **parent process** code block, call `wait()` before anything else. *Remember to pass it the address of your `w_status` int.*
+    - Make sure the **child process** is calling `return` when it's done.
+    - Use one of the macros to check if the child process **terminated normally**. If so, print `"Child process exited with status: %d\n"`. Use one of the other macros to get the exit status.
             > if (WIFEXITED(w_status)) {  
         	> printf("Child process exited with status: %d\n", WEXITSTATUS(w_status));}  
     - Try tweaking the argument you pass to the `return()` call in your child process. Does the output change accordingly?
@@ -82,10 +84,8 @@ It's also possible to have your parent process wait on its child processes to te
 
 Here's a fun short explanation about zombie processes for later: [understanding zombie processes](https://youtu.be/xJ8KenZw2ag)
 
-***Break (5 mins)***
-
 ### execve
-The `exec()` family of functions allows us to replace the current process with a new program.  
+The `exec()` family of functions allows us to **replace** the current process with a new program.  
 No new process is created; the PID remains the same. The functions simply have the existing process execute a new program.
 1. What is the prototype of `execve()`? (10 mins)
     - Break down each of function parameters. What does each mean?
@@ -110,8 +110,10 @@ No new process is created; the PID remains the same. The functions simply have t
     - Does your program execute `ls` with the `-l` list option when you run it? Does the "after execv" statement print?
         > Contents of folder should be outputted after "This line is from child", but the second print statement is never run because exec doesn't return if successful.
 
+***Break (5 mins)***
+
 ### dup & dup2
-`dup()` and `dup2()` create a copy of a file descriptor.
+`dup()` and `dup2()` create a **copy** of a file descriptor.
 1. What is the prototype for `dup()`? What about `dup2()`? What do both return?  (5 mins)
     > `int dup(int oldfd);`  
     >  `int dup2(int oldfd, int newfd);`  
@@ -143,11 +145,10 @@ No new process is created; the PID remains the same. The functions simply have t
         > `write(1, "This isn't being printed on stdout\n", 35);`
         > string should be printed in test.txt instead of terminal
 
-***Break (5 mins)***
-
+## Bonus
 ### pipe
 `pipe()` allows data to be passed from one process to another.  
-This "pipeline" between processes is unidirectional, meaning data flows in one direction.  
+This "pipeline" between processes is **unidirectional**, meaning data flows in one direction.  
 Therefore, you have one end of the pipe that reads data and one end of the pipe that writes data.
     ![one-way pipe](https://www.tutorialspoint.com/inter_process_communication/images/pipe_with_one.jpg)
 1. What is the prototype of `pipe()`? What is being stored in the int array you're passing it? (10 mins)
@@ -173,7 +174,7 @@ Therefore, you have one end of the pipe that reads data and one end of the pipe 
         -  writes a newline to stdout;
         -  **closes** the remaining pipe end.
     ![pipe example](https://i.imgur.com/40cUyDo.png)
-4. Bonus question: why do we close the pipe ends we don't use at the start? Why do we close the pipe end we used after we're done?
+4. Why do we close the **pipe ends we don't use** at the start? Why do we close the pipe end we used after we're done?
     ![closing ends](https://chensunmac.gitbooks.io/csc209-practical-programming/content/assets/pipe2.png)
     > If all fds referring to the write end of a pipe are closed, end-of-file is sent to `read`, which then knows to stop reading.  
     > If all fds referring to the read end of a pipe are closed, attempting `write` on the other end generates a SIGPIPE signal.  
@@ -183,9 +184,10 @@ That was a simple exercise to show you how data can be passed through pipes and 
 
 Things get even more mind-blowing when you throw `dup`/`dup2` into the mix.  
 
+## Tips
 Here's a more detailed explanation about data flows through pipes, with handy diagrams: [pipes, forks, & dups](http://www.rozmichelle.com/pipes-forks-dups/)
 
-Things that we couldn't cover today but that would be helpful to look into for your project:
+And here's a couple other things that could be helpful to look into for your project:
 - abstract syntax tree
 - finite state machines
 
