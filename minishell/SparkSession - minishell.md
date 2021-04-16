@@ -1,5 +1,5 @@
 # Spark Session: minishell
-*updated: 14/04/2021*
+*updated: 15/04/2021*
 
 Project description:
 > Create a simple shell
@@ -122,12 +122,13 @@ Therefore, you have one end of the pipe that reads data and one end of the pipe 
     - the parent process:
         -  should **close** the pipe end that it doesn't need;
         -  **writes** argv[1] to the correct end of the pipe;
-        -  **close** the remaining pipe end.
+        -  **closes** the remaining pipe end;
+        -  **waits** for its child processes to terminate and checks their status.
     -  the child process:
         -  should **close** the pipe end that it doesn't need;
         -  in a loop, **reads** the string from the pipe, one byte at a time;
         -  calls `toupper()` (include `ctype.h`) on the read char;
-        -  **writes** to converted char to stdout;
+        -  **writes** the converted char to stdout;
         -  writes a newline to stdout;
         -  **closes** the remaining pipe end.
     ![pipe example](https://i.imgur.com/40cUyDo.png)
