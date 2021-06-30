@@ -1,5 +1,5 @@
 # Spark Session: minishell
-*updated: 15/04/2021*
+*updated: 30/06/2021*
 
 Project description:
 > Create a simple shell
@@ -65,7 +65,7 @@ In this case, the parent and the child process execute concurrently. The order o
 
 ### wait
 It's also possible to have your parent process wait on its child processes to terminate. You do this by calling `wait()` in the parent process. This **[synchronises](https://flylib.com/books/en/1.311.1.42/1/)** the parent and child process.
-1. What is the prototype of `wait()`? What information is stored in the `int*` parameter that you pass to the function? (5 mins)
+1. What is the prototype of `wait()`? What information is stored in the `int` whose address we pass as a parameter to the function? (5 mins)
     > `pid_t wait(int *wstatus);`  
     > if not NULL, `wstatus` contains the child process' status information, which can be checked with macros like `WIFSIGNALED` and `WIFEXITED`.
 2. Calling `wait()` (or `waitpid()`) in the parent process prevents what's called **"zombie processes"**. What does this mean? (10 mins)
