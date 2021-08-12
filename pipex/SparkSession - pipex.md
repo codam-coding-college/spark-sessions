@@ -2,7 +2,7 @@
 *updated: 12/08/2021*
 
 Project description:
-> Create a simple program that handles redirections and pipes. An introductifor the bigger UNIX projects that are to come.
+> Create a simple program that handles redirections and pipes. An introduction to the bigger UNIX projects that are to come.
 ## Topics
 1. Processes
 2. fork
