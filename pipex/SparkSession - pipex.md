@@ -1,9 +1,8 @@
-# Spark Session: minishell
-*updated: 30/06/2021*
+# Spark Session: pipex
+*updated: 12/08/2021*
 
 Project description:
-> Create a simple shell
-
+> Create a simple program that handles redirections and pipes. An introductifor the bigger UNIX projects that are to come.
 ## Topics
 1. Processes
 2. fork
