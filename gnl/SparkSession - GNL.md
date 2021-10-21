@@ -40,7 +40,7 @@ Project description:
 
 1. What is a static variable? (30 mins)
     - Use the internet to find the definition of a static variable and its unique characteristics. (10 mins)
-    - Discuss the following points together and make sure everyone understands: when might you use it? Where is it allocated in memory? What are the disadvantages when it comes to memory and reusability? (20 mins)
+    - Discuss the following points together and make sure everyone understands: when might you use it? Where is it allocated in memory? What are the disadvantages when it comes to memory and reusability? And what are the advantages ?(20 mins)
 
 2. Let's practice! (20 mins)
     - Write a function that: (10 mins)
