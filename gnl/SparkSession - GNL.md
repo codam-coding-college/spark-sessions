@@ -52,5 +52,5 @@ Project description:
     - As a closing step, discuss whether it's possible or not to restore a static variable to its initial value.
 ### 
 
-   - Please feel in the feedback form afterward, we'd love to hear how you experienced the session! 
+   - Please fill in the feedback form afterward, we'd love to hear how you experienced the session! 
         [feedbacksheet](https://docs.google.com/forms/d/1Rxyu_5lisstaCNpf8oa6YtFHurdAt9foFZPKIW2psWw/edit) 
