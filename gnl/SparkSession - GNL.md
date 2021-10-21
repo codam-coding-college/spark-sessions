@@ -1,5 +1,5 @@
 # Spark Session: get_next_line 
-*updated: 14/01/2021*
+*updated: 21/10/2021*
 
 Project description:
 > Write a function which returns a line read from a file descriptor, without the newline.
@@ -50,3 +50,7 @@ Project description:
         - then returns the int value.
     - Write the accompanying main that calls that function in a loop 9 times and outputs the returned value using **write()** to the standard output on each iteration. What happens to the return value? (10 mins)
     - As a closing step, discuss whether it's possible or not to restore a static variable to its initial value.
+### 
+
+   - Please feel in the feedback form afterward, we'd love to hear how you experienced the session! 
+        [feedbacksheet](https://docs.google.com/forms/d/1Rxyu_5lisstaCNpf8oa6YtFHurdAt9foFZPKIW2psWw/edit) 
