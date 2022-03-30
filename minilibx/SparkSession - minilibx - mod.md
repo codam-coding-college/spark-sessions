@@ -27,7 +27,7 @@ Our first step will be to open up some windows! (30 mins)
     > Prototype: `void  *mlx_new_window(void *mlx_ptr, int size_x, int size_y, char *title);`  
     > Return: window instance pointer  
     > Code: `void *mlx_win = mlx_new_window(mlx, 800, 480, "My first window");`
-33. What happens if you compile and run the program at this point? Your window should have only popped up for a moment.  
+3. What happens if you compile and run the program at this point? Your window should have only popped up for a moment.  
     To make it stay longer, we need to use `mlx_loop`. (15 mins)
     - What does it do and what is its prototype?
     - Once you understand that, add `mlx_loop` to your code.
@@ -63,7 +63,7 @@ Time to put something on that empty window. (60 mins)
     ```  
     - Notice that we shifted the image pointer into the struct. Adjust your initialisation of `mlx_new_image` accordingly.
     - Then call `mlx_get_data_addr` and pass it the appropriate arguments/references.
-5. As explained in point #1, `mlx_pixel_put` is rather inefficient, so here's a much faster version to use in your code: (10 mins)  
+4. As explained in point #1, `mlx_pixel_put` is rather inefficient, so here's a much faster version to use in your code: (10 mins)  
     ```
     void    my_pixel_put(t_img *img, int x, int y, unsigned int colour)
     {
@@ -79,9 +79,9 @@ Time to put something on that empty window. (60 mins)
     > The function calculates the address of a pixel by adding its memory offset to the address of the first pixel (img->address here).  
     > Offset is necessary because `line_size` returned by `mlx_get_data_addr` is different from actual window width due to the bytes not being aligned. Function then colours that pixel.  
     > [explanation of formula for offset (see "An image in memory" section)](https://www.collabora.com/news-and-blog/blog/2016/02/16/a-programmers-view-on-digital-images-the-essentials/)
-7. Now, using your `my_pixel_put` function, put a **white** pixel in the **middle** of your image. (10 mins)
+5. Now, using your `my_pixel_put` function, put a **white** pixel in the **middle** of your image. (10 mins)
     > Code: `my_pixel_put(&img, 800/2, 480/2, 0xFFFFFF);`
-8. Our image is all ready to be shown! Let's look at `mlx_put_image_to_window`. What parameters does it take?  
+6. Our image is all ready to be shown! Let's look at `mlx_put_image_to_window`. What parameters does it take?  
     Add the function to your code and see if your little white dot is showing in your window. (10 mins)
     > Prototype: `int mlx_put_image_to_window(void *mlx_ptr, void *win_ptr, void *img_ptr, int x, int y);`
 
