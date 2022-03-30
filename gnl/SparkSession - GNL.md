@@ -1,5 +1,5 @@
 # Spark Session: get_next_line 
-*updated: 29/10/2021*
+*updated: 30/03/2022*
 
 Project description:
 > Write a function which returns a line read from a file descriptor, without the newline.
@@ -39,9 +39,8 @@ Project description:
 ### Static Variables
 
 1. What is a static variable?
-    - Use the internet to find the definition of a static variable and its unique characteristics. (10 mins)
-    - What is an automatic variable?
-    - Discuss the following points together and make sure everyone understands: when might you use a static variable? Where is it allocated in memory? What are the disadvantages when it comes to memory and reusability? And what are the advantages ?(15 mins)
+    - Use the internet to find the definition of a static variable and its unique characteristics.
+    - Discuss the following points together and make sure everyone understands: when might you use a static variable? Where is it allocated in memory? What are the disadvantages when it comes to memory and reusability?
 
 2. Let's practice!
     - Write a function that: (10 mins)
@@ -51,7 +50,3 @@ Project description:
         - then returns the int value.
     - Write the accompanying main that calls that function in a loop 9 times and outputs the returned value using **write()** to the standard output on each iteration. What happens to the return value? (10 mins)
     - As a closing step, discuss whether it's possible or not to restore a static variable to its initial value.
-### 
-
-   - Please fill in the feedback form afterward, we'd love to hear how you experienced the session and get insights on  how to improve! 
-        [feedbacksheet](https://docs.google.com/forms/d/1Rxyu_5lisstaCNpf8oa6YtFHurdAt9foFZPKIW2psWw/edit) 
