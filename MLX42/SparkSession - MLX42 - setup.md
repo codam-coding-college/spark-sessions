@@ -1,5 +1,5 @@
 ## Setting Up MLX42
-*updated: 04/03/2021*
+*Updated: 30/03/2022*
 
 During the Spark Session, we'll be writing a little program that can open a window, draw some pixels, and even move pixels!
 
