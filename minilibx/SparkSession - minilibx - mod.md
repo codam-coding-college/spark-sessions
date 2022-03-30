@@ -14,41 +14,41 @@ This tutorial was written with help from Harm Smits and Jelle van Snik's [MiniLi
 
 ### Window Management
 Our first step will be to open up some windows! (30 mins)
-1. In the set-up instructions, I gave you some code for your `main.c` that included a call to `mlx_init`.  
-    But what does it do and what is its prototype? What does it return? (5 mins)  
+1. In the set-up instructions, I gave you some code for your `main.c` that included a call to `mlx_init`.
+    But what does it do and what is its prototype? What does it return? (5 mins)
     This link might help -> [prototypes](https://harm-smits.github.io/42docs/libs/minilibx/prototypes.html)
-    > Function: initialises mlx, establishes a connection to the correct graphical system  
-    > Prototype: `void *mlx_init();`  
+    > Function: initialises mlx, establishes a connection to the correct graphical system
+    > Prototype: `void *mlx_init();`
     > Return: mlx instance
 2. Let's try opening a small empty window. (10 mins)
     - What is the prototype for `mlx_new_window` and what does it return?
     - How would you declare and initalize it?
     - Now create a window with a width of **800**, height of **480**, and a title of **"My first window"**.
-    > Prototype: `void  *mlx_new_window(void *mlx_ptr, int size_x, int size_y, char *title);`  
-    > Return: window instance pointer  
+    > Prototype: `void  *mlx_new_window(void *mlx_ptr, int size_x, int size_y, char *title);`
+    > Return: window instance pointer
     > Code: `void *mlx_win = mlx_new_window(mlx, 800, 480, "My first window");`
-33. What happens if you compile and run the program at this point? Your window should have only popped up for a moment.  
+3. What happens if you compile and run the program at this point? Your window should have only popped up for a moment.
     To make it stay longer, we need to use `mlx_loop`. (15 mins)
     - What does it do and what is its prototype?
     - Once you understand that, add `mlx_loop` to your code.
     - Do you now get a window that stays open? Press `Ctrl-C` to close it when you're done admiring your work.
     - **Important**: `mlx_loop` should be called last in your code. Do you know why?
-    > Function: loops over the given mlx pointer  
-    > Prototype: `int mlx_loop (void *mlx_ptr); // return unused`  
+    > Function: loops over the given mlx pointer
+    > Prototype: `int mlx_loop (void *mlx_ptr); // return unused`
     > If mlx_loop is called before any other function, it won't get there.
 
 ***Break (5 mins)***
 
 ### Pixel Putting
 Time to put something on that empty window. (60 mins)
-1. Rather than [inefficiently pushing pixels](https://harm-smits.github.io/42docs/libs/minilibx/getting_started.html#writing-pixels-to-a-image) one by one to the window using `mlx_pixel_put` , we should draw our pixels onto an **image** first, then push that image to our window. So we need `mlx_new_image`. (10 mins)  
+1. Rather than [inefficiently pushing pixels](https://harm-smits.github.io/42docs/libs/minilibx/getting_started.html#writing-pixels-to-a-image) one by one to the window using `mlx_pixel_put` , we should draw our pixels onto an **image** first, then push that image to our window. So we need `mlx_new_image`. (10 mins)
     - What is `mlx_new_image`'s prototype and return?
-    - Once you understand that, go ahead and initialise an image with a size of **800 x 480**. 
-    > Prototype: `void  *mlx_new_image(void *mlx_ptr,int width,int height);`  
-    > Return: image instance pointer  
+    - Once you understand that, go ahead and initialise an image with a size of **800 x 480**.
+    > Prototype: `void  *mlx_new_image(void *mlx_ptr,int width,int height);`
+    > Return: image instance pointer
     > Code: `void *img_ptr = mlx_new_image(mlx, 800, 480);`
 2. In order to know where we can put our pixels, we need to get the **memory address** of our image. That's where `mlx_get_data_addr` comes in. What arguments does it take and what does it return? (10 mins)
-    > Prototype: `char *mlx_get_data_addr(void *img_ptr, int *bits_per_pixel, int *size_line, int *endian);`  
+    > Prototype: `char *mlx_get_data_addr(void *img_ptr, int *bits_per_pixel, int *size_line, int *endian);`
     > Return: memory address of image
 3. Since the function requires a lot of extra variables, let's keep things neat by using a struct for our image data. (10 mins)
     ```
@@ -60,28 +60,28 @@ Time to put something on that empty window. (60 mins)
     	int		line_size;
     	int		endian;
     }				t_img;
-    ```  
+    ```
     - Notice that we shifted the image pointer into the struct. Adjust your initialisation of `mlx_new_image` accordingly.
     - Then call `mlx_get_data_addr` and pass it the appropriate arguments/references.
-5. As explained in point #1, `mlx_pixel_put` is rather inefficient, so here's a much faster version to use in your code: (10 mins)  
+5. As explained in point #1, `mlx_pixel_put` is rather inefficient, so here's a much faster version to use in your code: (10 mins)
     ```
     void    my_pixel_put(t_img *img, int x, int y, unsigned int colour)
     {
     	char	*dst;
     	int		offset;
-    
+
     	offset = y * img->line_size + x * (img->bits_per_pixel / 8);
     	dst = img->address + offset;
     	*(unsigned int *)dst = colour;
     }
     ```
     - What is this function doing? What is `offset`?
-    > The function calculates the address of a pixel by adding its memory offset to the address of the first pixel (img->address here).  
-    > Offset is necessary because `line_size` returned by `mlx_get_data_addr` is different from actual window width due to the bytes not being aligned. Function then colours that pixel.  
+    > The function calculates the address of a pixel by adding its memory offset to the address of the first pixel (img->address here).
+    > Offset is necessary because `line_size` returned by `mlx_get_data_addr` is different from actual window width due to the bytes not being aligned. Function then colours that pixel.
     > [explanation of formula for offset (see "An image in memory" section)](https://www.collabora.com/news-and-blog/blog/2016/02/16/a-programmers-view-on-digital-images-the-essentials/)
 7. Now, using your `my_pixel_put` function, put a **white** pixel in the **middle** of your image. (10 mins)
     > Code: `my_pixel_put(&img, 800/2, 480/2, 0xFFFFFF);`
-8. Our image is all ready to be shown! Let's look at `mlx_put_image_to_window`. What parameters does it take?  
+8. Our image is all ready to be shown! Let's look at `mlx_put_image_to_window`. What parameters does it take?
     Add the function to your code and see if your little white dot is showing in your window. (10 mins)
     > Prototype: `int mlx_put_image_to_window(void *mlx_ptr, void *win_ptr, void *img_ptr, int x, int y);`
 
@@ -99,7 +99,7 @@ Let's get fancier. Now we're gonna try drawing *lines*. (25 mins)
 		x++;
 	}
 	```
-2. Now draw a single vertical white line down the middle of the entire screen. (10 mins)  
+2. Now draw a single vertical white line down the middle of the entire screen. (10 mins)\
     You should end up with what looks like a crosshair in your window.
     ```
     // example code answer
@@ -113,7 +113,7 @@ Let's get fancier. Now we're gonna try drawing *lines*. (25 mins)
 
 ### Events & Hooks
 Having to do `Ctrl-C` every time is probably getting annoying. Let's learn how to close the window when the 'X' button of your window (not your keyboard) is pressed. (35 mins)
-1. Hooks, along with events, are vital to making your program interactive. They allow you to intercept keyboard or mouse events and respond to them. You can think of hooks as functions that get called when an event occurs.  
+1. Hooks, along with events, are vital to making your program interactive. They allow you to intercept keyboard or mouse events and respond to them. You can think of hooks as functions that get called when an event occurs.\
     What is the prototype for `mlx_hook`? *(Hint: you may have to look it up in mlx.h)* (5 mins)
     > Prototype: `int mlx_hook(t_win_list *win, int x_event, int x_mask, int (*funct)(), void *param);`
 2. miniLibX uses the event codes and masks set out in the [**X11** library](https://code.woboq.org/qt5/include/X11/X.h.html). What do event codes and masks do? (5 mins)
@@ -122,7 +122,7 @@ Having to do `Ctrl-C` every time is probably getting annoying. Let's learn how t
 3. What are the **event codes** and **masks** for key presses, key releases, and the 'X' close button? (10 mins)
     - Here's a really helpful resource: [handling mouse and keys](https://github.com/VBrazhnik/FdF/wiki/How-to-handle-mouse-buttons-and-key-presses%3F)
     - **Watch out**: the Linux event code for the 'X' close button is different than on macOS. Whereas Mac users can use the code for "DestroyNotify", Linux (and WSL) users will need the code for "ClientMessage".
-    > Codes: press = 2, release = 3, X button = 17 (Mac) or 33 (Linux)  
+    > Codes: press = 2, release = 3, X button = 17 (Mac) or 33 (Linux)
     > Masks: press = `1L << 0`, release = `1L << 1`, X button = `1L << 17`
 4. Write a function that: (10 mins)
     - takes as its argument a **pointer to a struct** containing at least your mlx pointer and window pointer *(either make a new struct or expand your existing one)*;
@@ -154,10 +154,10 @@ First, however, let's make our crosshair smaller, because who needs a crosshair 
     - accepts your data/game struct as its parameter;
     - can render a crosshair of a particular **width** and **height**, instead of only the height/width of the screen;
     - renders that crosshair in the **middle of the screen** *(you'll have to do some math using the object dimensions and starting positions, sorry)*;
-    - calls `mlx_put_image_to_window` at the end.  
+    - calls `mlx_put_image_to_window` at the end.
 3. Get a **30 x 30** pixel crosshair onto your window. Did it work?
-    > Note: there will be different ways of solving this. I've included some example non-optimised solutions on the last page of this document.  
-    > Example formula for computing starting x of crosshair (i.e. the leftmost pixel of the horizontal line):  
+    > Note: there will be different ways of solving this. I've included some example non-optimised solutions on the last page of this document.
+    > Example formula for computing starting x of crosshair (i.e. the leftmost pixel of the horizontal line):
     `start_x = (game.screen_width - game.obj.width) / 2`
 
 Now let's hook into keyboard events!
@@ -172,11 +172,11 @@ Now let's hook into keyboard events!
     - If you're seeing a trail of crosshairs, you're probably not rendering the background each time.
     - If your program is crashing when you hit one of the walls, perhaps you should add checks to your keypress function.
 
-![macOS key codes](https://i.imgur.com/CNPRkMg.png)
-macOS  
+macOS\
+![macOS key codes](https://i.imgur.com/CNPRkMg.png)\
 
+Linux\
 ![Linux key codes](https://i.imgur.com/a6yVUhm.png)
-Linux
 
 ```
 // example code for draw_crosshair & keypress functions
@@ -204,7 +204,7 @@ void	draw_crosshair(t_data *game)
 		}
 		mlx_put_image_to_window(game->mlx_ptr, game->win, game->img->img_ptr, 0, 0);
 	}
-	
+
 	int		keypress(int keycode, t_data *game)
     {
     	if (keycode == ESC)
@@ -226,7 +226,7 @@ void	draw_crosshair(t_data *game)
     	}
     	return (0);
     }
-	
+
 	int main(void)
 	{
 	    ...
@@ -234,7 +234,7 @@ void	draw_crosshair(t_data *game)
     	game.obj.start.x = (game.screen_width - game.obj.width) / 2;
     	game.obj.start.y = game.screen_height / 2;
     	draw_crosshair(&game);
-    	
+
 		mlx_hook(game.win, 33, 1L << 17, exiter, &game); // event code on Linux
 		mlx_hook(game.win, 2, 1L << 0, keypress, &game);
         mlx_loop_hook(game.mlx_ptr, &updater, &game);

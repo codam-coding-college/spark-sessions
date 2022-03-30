@@ -21,7 +21,7 @@ If you haven't already, install `nasm` on your system using the following comman
 - For macOS: [install Homebrew](https://brew.sh/) if you don't have it yet, then run `brew install nasm`
 
 ## Registers
-1. Registers are internal memory storage locations in the processor that temporarily hold memory.  
+1. Registers are internal memory storage locations in the processor that temporarily hold memory.\
     In x86_64 architecture, we have access to 64-bit registers. What does that "64-bit" mean? (5 mins)
     > that the registers can hold 64 bits of data
 2. We won't go into details about all the registers. Broadly, some registers are used for specific purposes - such as segment registers and the Flags register - while some are for general use. These latter ones are called **General Purpose Registers** and there are **16** of them in 64-bit x86 architecture. What are the registers? (10 mins)
@@ -32,7 +32,7 @@ If you haven't already, install `nasm` on your system using the following comman
         > the least significant byte of the accumulator register - bits 0 to 7 of RAX
 
     - Here's a table showing the breakdown of every general purpose register:
-    ![gpr](https://i.imgur.com/4UQtei7.jpg?1)  
+    ![gpr](https://i.imgur.com/4UQtei7.jpg?1)
     [source, with many other helpful tips](https://aaronbloomfield.github.io/pdr/book/x86-64bit-asm-chapter.pdf)
     - **Question**: how would you access the lowest 8 bits of R8?
         > r8b
@@ -50,7 +50,7 @@ If you haven't already, install `nasm` on your system using the following comman
     - Lastly, 6 specific registers are used to pass parameters to functions. What are they and which arguments do they correspond to?
         > 1st: RDI, 2nd: RSI, 3rd: RDX, 4th: RCX, 5th: R8, 6th: R9
 5. There are certain registers whose values are preserved across function calls - **callee-saved registers** - and registers whose values are not preserved and must be saved if you want to make sure your values aren't changed - **caller-saved registers**. (10 mins)
-    - Which are the callee-saved registers? 
+    - Which are the callee-saved registers?
         >  RBX, RSP, RBP, and R12–R15
 
     - Note that which registers are caller/callee-saved vary by system, thus ["calling conventions"](https://en.wikipedia.org/wiki/X86_calling_conventions#x86-64_calling_conventions).
@@ -99,7 +99,7 @@ Now let's look at system calls or **syscall**s, which allow a program to request
     - For macOS: [syscall IDs in syscalls.master](https://opensource.apple.com/source/xnu/xnu-1504.3.12/bsd/kern/syscalls.master). Note: You'll need to add `0x200000` before each ID.
     - What are the syscall IDs for `write()` and `exit()` for your system?
         > `write` is 1 (Linux) and 0x2000004 (mac), `exit` is 60 (Linux) and 0x2000001 (mac)
-2. As with normal functions, syscalls can take arguments. Just like in C, `write` takes an fd, a buffer, and the number of bytes to write. We talked about parameter registers earlier. If you want to call `write`, which parameters would you pass to which register? (10 mins)  
+2. As with normal functions, syscalls can take arguments. Just like in C, `write` takes an fd, a buffer, and the number of bytes to write. We talked about parameter registers earlier. If you want to call `write`, which parameters would you pass to which register? (10 mins)\
     Here's a convenient table for you:
     | syscall  | rax | rdi | rsi | rdx | rcx (r10 for Linux) | r8 | r9 |
     |---|---|---|---|---|---|---|---|
@@ -116,12 +116,12 @@ Now let's look at system calls or **syscall**s, which allow a program to request
     - To make a system call, you need to:
         1. pass the syscall ID into RAX
         2. pass any arguments for the syscall
-        3. use the `syscall` instruction  
-    
+        3. use the `syscall` instruction
+
         Go ahead and turn those steps into assembly code.
-        > `mov rax, 60` ; or 0x2000001 for mac  
-	    > `mov	rdi, 0`  
-	    > `syscall`  
+        > `mov rax, 60` ; or 0x2000001 for mac
+	    > `mov	rdi, 0`
+	    > `syscall`
 
     - Although you'll be creating a library for libasm, today we're just going to make a standalone program. So the compilation steps will be different. To compile your `.s` file, run these commands:
         - **Note**: remember to change `myfile.s` & `myfile.o` to your actual file name
@@ -141,19 +141,19 @@ Now let's look at system calls or **syscall**s, which allow a program to request
             text db "Hello, world!", 10
         ```
         - What is "text" here? And what does "db" mean? What is the "10" at the end?
-        > `text` is a label we can use in our instructions, it's a pointer to the memory address of the string. `start` is also a label. they are essentially variable names.  
-        > `db` stands for define bytes, it means we are going to define some raw bytes (each character in our string is a byte).  
-        > `10` is ascii for the newline character.  
+        > `text` is a label we can use in our instructions, it's a pointer to the memory address of the string. `start` is also a label. they are essentially variable names.
+        > `db` stands for define bytes, it means we are going to define some raw bytes (each character in our string is a byte).
+        > `10` is ascii for the newline character.
 
     - Next declare your `.text` section as you did in the previous exercise.
     - For this exercise, we're going to call `write()` first to output our `text` onto **stdout**. Remember the instruction order for calling `exit()` earlier. What values do you need to move into which registers?
-        > ; code example for Linux  
-        > main:  
-        > mov rax, 1 ; write for Linux  
-        > mov rdi, 1 ; stdout  
-        > mov rsi, text  
-        > mov rdx, 14 ; len of text  
-        > syscall  
+        > ; code example for Linux
+        > main:
+        > mov rax, 1 ; write for Linux
+        > mov rdi, 1 ; stdout
+        > mov rsi, text
+        > mov rdx, 14 ; len of text
+        > syscall
 
     - Finish with a call to `exit()` again like you did earlier.
     - Compile with the same commands you used earlier. Do you get "Hello, world!"?
@@ -164,10 +164,10 @@ Stack alignment can be a tricky thing to understand. What you need to know is th
 - When your program starts at `main` (or `start`), `rsp` (the stack pointer) is 16-byte aligned.
 - If you make an external function call, however, such as `call printf` or `call myownfunction`, an **8-byte return address** is pushed onto the stack. Because we're temporarily leaving this function and we need to know where to come back to, right?
 - But this means the stack is now misaligned by **8 bytes**. So how do we re-align our stack? (15 mins)
-    > By either pushing something that is 8 bytes, like a register (e.g. rbx), and popping it after function call or `sub rsp, 8` at beginning and `add rsp, 8` at end.  
+    > By either pushing something that is 8 bytes, like a register (e.g. rbx), and popping it after function call or `sub rsp, 8` at beginning and `add rsp, 8` at end.
     > good clear explanation about alignment: [link](https://link.springer.com/chapter/10.1007/978-1-4842-5076-1_13)
 
-You can find more detailed explanations of the stack and alignment online.  
+You can find more detailed explanations of the stack and alignment online.\
 Here's a helpful link for later: [what does it mean to align the stack](https://stackoverflow.com/questions/4175281/what-does-it-mean-to-align-the-stack/4176397#4176397)
 
 ## Bonus
@@ -176,7 +176,7 @@ Here's a helpful link for later: [what does it mean to align the stack](https://
     - `-1` if `a < b`;
     - `0` if `a == b`.
 
-    The function prototype is `int compare(int64_t a, int64_t b)`.  
+    The function prototype is `int compare(int64_t a, int64_t b)`.
 
 2. You'll also make a test main C file. It should:
     - include <inttypes.h> for the `int64_t` types;
@@ -186,5 +186,3 @@ Here's a helpful link for later: [what does it mean to align the stack](https://
 4. Compile and run it to see if your function is working correctly.
     - For Linux: `nasm -felf64 compare.s && gcc compare.o main.c`
     - For macOS: `nasm -fmacho64 compare.s && gcc compare.o main.c`
-
-

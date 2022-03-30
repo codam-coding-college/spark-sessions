@@ -57,12 +57,12 @@ Project description:
         {
             PLUS = 0, MINUS
         };
-        
+
         void	operation_add(int a, int b)
         {
         	printf("%d + %d = %d\n", a, b, a + b);
         }
-        
+
         void	operation_minus(int a, int b)
         {
         	printf("%d - %d = %d\n", a, b, a - b);
@@ -88,7 +88,7 @@ Project description:
     {
         printf("%s\n", va_arg(list, char *));
     }
-    
+
     void    print_digit(va_list list)
     {
         printf("%d\n", va_arg(list, int));

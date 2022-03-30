@@ -1,4 +1,4 @@
-# Spark Session: get_next_line 
+# Spark Session: get_next_line
 *updated: 30/03/2022*
 
 Project description:

@@ -21,14 +21,13 @@ If you haven't already, install `nasm` on your system using the following comman
 - For macOS: [install Homebrew](https://brew.sh/) if you don't have it yet, then run `brew install nasm`
 
 ## Registers
-1. Registers are internal memory storage locations in the processor that temporarily hold memory.  
-    In x86_64 architecture, we have access to 64-bit registers. What does that "64-bit" mean? (5 mins)
+1. Registers are internal memory storage locations in the processor that temporarily hold memory. In x86_64 architecture, we have access to 64-bit registers. What does that "64-bit" mean? (5 mins)
 2. We won't go into details about all the registers. Broadly, some registers are used for specific purposes - such as segment registers and the Flags register - while some are for general use. These latter ones are called **General Purpose Registers** and there are **16** of them in 64-bit x86 architecture. What are the registers? (10 mins)
 3. You're not limited to working with these registers in their 64-bit entirety though. You can access smaller "sections" of these registers through identifiers. For example, the least significant 2 bytes (16 bits) of RAX can be treated as a 16-bit register called AX. (15 mins)
     ![register breakdown](https://i.imgur.com/nToJ8HY.jpg)
     - **Question**: what is AL in this case?
     - Here's a table showing the breakdown of every general purpose register:
-    ![gpr](https://i.imgur.com/4UQtei7.jpg?1)  
+    ![gpr](https://i.imgur.com/4UQtei7.jpg?1)\
     [source, with many other helpful tips](https://aaronbloomfield.github.io/pdr/book/x86-64bit-asm-chapter.pdf)
     - **Question**: how would you access the lowest 8 bits of R8?
     - **Question**: are these "sub"registers independent? For example, will modifying `al` affect `ax`?
@@ -78,7 +77,7 @@ Now let's look at system calls or **syscall**s, which allow a program to request
     - For Linux: [syscall IDs as found in unistd_64.h](https://code.woboq.org/linux/linux/arch/x86/include/generated/uapi/asm/unistd_64.h.html)
     - For macOS: [syscall IDs in syscalls.master](https://opensource.apple.com/source/xnu/xnu-1504.3.12/bsd/kern/syscalls.master). Note: You'll need to add `0x200000` before each ID.
     - What are the syscall IDs for `write()` and `exit()` for your system?
-2. As with normal functions, syscalls can take arguments. Just like in C, `write` takes an fd, a buffer, and the number of bytes to write. We talked about parameter registers earlier. If you want to call `write`, which parameters would you pass to which register? (10 mins)  
+2. As with normal functions, syscalls can take arguments. Just like in C, `write` takes an fd, a buffer, and the number of bytes to write. We talked about parameter registers earlier. If you want to call `write`, which parameters would you pass to which register? (10 mins)\
     Here's a convenient table for you:
     | syscall  | rax | rdi | rsi | rdx | rcx (r10 for Linux) | r8 | r9 |
     |---|---|---|---|---|---|---|---|
@@ -94,8 +93,8 @@ Now let's look at system calls or **syscall**s, which allow a program to request
     - To make a system call, you need to:
         1. pass the syscall ID into RAX
         2. pass any arguments for the syscall
-        3. use the `syscall` instruction  
-    
+        3. use the `syscall` instruction
+
         Go ahead and turn those steps into assembly code.
     - Although you'll be creating a library for libasm, today we're just going to make a standalone program. So the compilation steps will be different. To compile your `.s` file, run these commands:
         - **Note**: remember to change `myfile.s` & `myfile.o` to your actual file name
@@ -126,7 +125,7 @@ Stack alignment can be a tricky thing to understand. What you need to know is th
 - If you make an external function call, however, such as `call printf` or `call myownfunction`, an **8-byte return address** is pushed onto the stack. Because we're temporarily leaving this function and we need to know where to come back to, right?
 - But this means the stack is now misaligned by **8 bytes**. So how do we re-align our stack? (15 mins)
 
-You can find more detailed explanations of the stack and alignment online.  
+You can find more detailed explanations of the stack and alignment online.\
 Here's a helpful link for later: [what does it mean to align the stack](https://stackoverflow.com/questions/4175281/what-does-it-mean-to-align-the-stack/4176397#4176397)
 
 ## Bonus
@@ -135,7 +134,7 @@ Here's a helpful link for later: [what does it mean to align the stack](https://
     - `-1` if `a < b`;
     - `0` if `a == b`.
 
-    The function prototype is `int compare(int64_t a, int64_t b)`.  
+    The function prototype is `int compare(int64_t a, int64_t b)`.
 
 2. You'll also make a test main C file. It should:
     - include <inttypes.h> for the `int64_t` types;
@@ -145,5 +144,3 @@ Here's a helpful link for later: [what does it mean to align the stack](https://
 4. Compile and run it to see if your function is working correctly.
     - For Linux: `nasm -felf64 compare.s && gcc compare.o main.c`
     - For macOS: `nasm -fmacho64 compare.s && gcc compare.o main.c`
-
-
