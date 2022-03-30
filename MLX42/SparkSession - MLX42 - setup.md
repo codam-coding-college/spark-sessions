@@ -59,6 +59,12 @@ Before we can do that, we need to set up the MLX42 library and **link** the comp
         $(CC) $(OBJ) libmlx42.a -ldl -lglfw -o $(NAME)
     ```
 
+	- For Windows:
+    ```
+    $(NAME): $(OBJ)
+        $(CC) $(OBJ) libmlx42.a -lglfw3 -lopengl32 -lgdi32 -o $(NAME)
+    ```
+
 	**Tip: Don't forget to define the header location.** *Hint: `-I <Directory>`*
 
 7. Now try running `make` in your project directory. Does your program compile without errors? Your program itself won't do anything for now. If everything works, great! Now you're ready for the SparkSession and your project!
