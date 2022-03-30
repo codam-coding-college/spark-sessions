@@ -20,7 +20,8 @@ Our first step will be to open up some windows! (30 mins)
 1. In the set-up instructions, Some code was given to you for your `main.c` that included a call to `mlx_init`.  
     But what does it do and what is its prototype? What does it return? (5 mins)
 	- What are the variables we are passing to `mlx_init` ?
-	- Change the parameters to create a window with a width of **800** and a height of **400**, a title of your choice and make it so that we can resize our window.
+	- Study and understand the return value type and its layout!
+	- Change the parameters to create a window with a width of **800** and a height of **400**, a title of your choice and make it so that we can **not** resize our window.
 
 2. What happens if you compile and run the program at this point? Your window should have only popped up for a moment.  
     To make it stay longer, we need to use `mlx_loop`. (15 mins)
@@ -38,9 +39,13 @@ Our first step will be to open up some windows! (30 mins)
 ### Pixel Putting
 Time to put something on that empty window. (60 mins)
 
-1. Rather than [inefficiently pushing pixels](https://harm-smits.github.io/42docs/libs/minilibx/getting_started.html#writing-pixels-to-a-image) one by one to the window using `mlx_pixel_put` , we should draw our pixels onto an **image** first, then push that image to our window. So we need `mlx_new_image`. (10 mins)  
-    - What is `mlx_new_image`'s prototype and return?
-    - Once you understand that, go ahead and initialise an image with a size of **800 x 480**. 
+1. Let there be colourful pixels! As of now your window is pretty much void of anything. Just like a painter we need a canvas to draw on, its time to learn about images in MLX...
+	- What exactly is an image anyway?
+	- How do we create a new image? What are the prototypes and the return value?
+	- Study and understand the return value type and its layout!
+    - Once you understand that, go ahead and initialise an image with a size of the window.
+
+2. We now need to display our canvas, to do so, use `mlx_image_to_window`.
 
 2. In order to know where we can put our pixels, we need to get the **memory address** of our image. That's where `mlx_get_data_addr` comes in. What arguments does it take and what does it return? (10 mins)
 
