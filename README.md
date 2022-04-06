@@ -9,5 +9,5 @@ Run:
 ```
 git clone --recursive git@github com:codam-coding-college/spark-sessions.git
 cd spark-sessions
-cp hooks* .git/hooks/
+cp hooks/* .git/hooks/
 ```
