@@ -29,7 +29,7 @@ Our first step will be to open up some windows! (30 mins)
     - Once you understand that, add `mlx_loop` to your code.
     - Do you now get a window that stays open?
 
-3. How do we properly exit our application? When our application closes, MLX42 needs clean up its resources.
+3. How do we properly exit our application? When our application closes, we needs clean up its resources.
 	To make this possible use `mlx_terminate` (2 mins)
 	- Understand the purpose of having this function.
 	- **Important**: `mlx_loop` should be called before this function in your code. Do you know why?
@@ -39,60 +39,32 @@ Our first step will be to open up some windows! (30 mins)
 ### Pixel Putting
 Time to put something on that empty window. (60 mins)
 
-1. Let there be colourful pixels! As of now your window is pretty much void of anything. Just like a painter we need a canvas to draw on, its time to learn about images in MLX...
-	- What exactly is an image anyway?
-	- How do we create a new image? What are the prototypes and the return value?
-	- Study and understand the return value type and its layout!
-    - Once you understand that, go ahead and initialise an image with a size of the window.
+1. Let there be colourful pixels! As of now your window is pretty much void of anything. Just like a painter we need a canvas to draw on, its time to learn about images in MLX.
+	- What exactly is an image in its most basic form?
+	- Use `mlx_new_image`. What is the prototype and the return value for the function?
+	- Study and understand the return value!
+    - Once you understand that, go ahead and initialise an image with a width of **64** and a height of **64**.
 
-2. We now need to display our canvas, to do so, use `mlx_image_to_window`.
+2. Now, using the `mlx_put_pixel` function, put a **white** pixel in the **middle** of your image. (10 mins)
+	- How do you define colors?
+	- Understand how this function works, that is, how does it modify the image.
 
-2. In order to know where we can put our pixels, we need to get the **memory address** of our image. That's where `mlx_get_data_addr` comes in. What arguments does it take and what does it return? (10 mins)
-
-3. Since the function requires a lot of extra variables, let's keep things neat by using a struct for our image data. (10 mins)
-    ```
-    typedef struct s_img
-    {
-    	void	*img_ptr;
-    	char	*address;
-    	int		bits_per_pixel;
-    	int		line_size;
-    	int		endian;
-    }				t_img;
-    ```  
-    - Notice that we shifted the image pointer into the struct. Adjust your initialisation of `mlx_new_image` accordingly.
-    - Then call `mlx_get_data_addr` and pass it the appropriate arguments/references.
-
-5. As explained in point #1, `mlx_pixel_put` is rather inefficient, so here's a much faster version to use in your code: (10 mins)  
-    ```
-    void    my_pixel_put(t_img *img, int x, int y, unsigned int colour)
-    {
-    	char	*dst;
-    	int		offset;
-    
-    	offset = y * img->line_size + x * (img->bits_per_pixel / 8);
-    	dst = img->address + offset;
-    	*(unsigned int *)dst = colour;
-    }
-    ```
-    - What is this function doing? What is `offset`?
-7. Now, using your `my_pixel_put` function, put a **white** pixel in the **middle** of your image. (10 mins)
-
-8. Our image is all ready to be shown! Let's look at `mlx_put_image_to_window`. What parameters does it take?  
-    Add the function to your code and see if your little white dot is showing in your window. (10 mins)
+3. Our image is all ready to be shown! To do so, use `mlx_image_to_window`. MLX42 works with instances of images, that is, an image is like a 'painting' while an instance is a 'physical copy' of that painting.
+	- What are the prototypes and the return value for the function?
+	- What can you do with the return value?
 
 ***Break (5 mins)***
 
 ### More Pixels
 Let's get fancier. Now we're gonna try drawing *lines*. (25 mins)
 
-1. Draw a single horizontal white line running across the middle of the entire screen. You'll need to call `my_pixel_put` in a loop. (15 mins)
+1. Draw a single horizontal white line running across the middle of the image. You'll need to call `mlx_put_pixel` in a loop. (15 mins)
 
-2. Now draw a single vertical white line down the middle of the entire screen. You should end up with what looks like a crosshair in your window. (10 mins)
+2. Now draw a single vertical white line down the middle of the image. You should end up with what looks like a crosshair in your image. (10 mins)
 
 &nbsp;  
 ### Events & Hooks
-Having to do `Ctrl-C` every time is probably getting annoying. Let's learn how to close the window when the 'X' button of your window (not your keyboard) is pressed. (35 mins)
+By default clicking on the 'X' button of your window bar closes the application. However, just because, we want to print a cool message onto the terminal when we close our application. (35 mins)
 
 1. Hooks, along with events, are vital to making your program interactive. They allow you to intercept keyboard or mouse events and respond to them. You can think of hooks as functions that get called when an event occurs.  
     What is the prototype for `mlx_hook`? *(Hint: you may have to look it up in mlx.h)* (5 mins)
