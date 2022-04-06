@@ -17,7 +17,7 @@ Before we get into how to work with processes, it's handy to understand what we 
 1. What is a process? (5 mins)
 
 A process is its own separate entity with its own defined **memory space**. This memory space is what is duplicated by `fork` and rewritten by `exec`, which we'll get to in a bit.\
-    Here's a diagram showing how this memory is divided:
+    Here's a diagram showing how this memory is divided:\
     ![process memory](https://i.imgur.com/nxmmQl3.png)
 
 To put it in really simple terms, you can think of a process like a struct — a collection of information bound to an entity.
@@ -40,7 +40,7 @@ This information includes the process ID, open files, its status, etc. You can r
         - checks for failed forks;
         - if in the **child** process: **decrements** `x` by 1, prints `"This line is from child, x is %d\n"`, and then **returns** 0;
         - else if in the **parent** process: **increments** `x` by 1 and then prints `"This line is from parent, x is %d\n"`.
-    - You should see how the data (the variable `x` in this case) starts with the same initial value in both processes, but that changes to this variable in one process **does not affect** the variable in another process.
+    - You should see how the data (the variable `x` in this case) starts with the same initial value in both processes, but that changes to this variable in one process **does not affect** the variable in another process.\
         ![example output](https://i.imgur.com/jOTXMCL.png)\
         *example output - your output order may vary*
     - Here we've specified that child should `return` when it's done. What happens if we comment that out? Try putting another `"x is %d"` statement at the **end of your main** to see.
@@ -88,7 +88,7 @@ No new process is created; the PID remains the same. The functions simply have t
 `dup()` and `dup2()` create a **copy** of a file descriptor.
 1. What is the prototype for `dup()`? What about `dup2()`? What do both return?  (5 mins)
 2. What are some differences between `dup` and `dup2` with regards to the new file descriptor? (5 mins)
-    - Here's a diagram to help you visualise the functions better:
+    - Here's a diagram to help you visualize the functions better:\
         ![dup](https://i.imgur.com/iJ7X39I.png)
 3. What do the new and old file descriptor share? (5 mins)
 4. Now let's write a program that: (15 mins)
@@ -109,7 +109,7 @@ No new process is created; the PID remains the same. The functions simply have t
 ## Bonus
 ### pipe
 `pipe()` allows data to be passed from one process to another.\
-This "pipeline" between processes is **unidirectional**, meaning data flows in one direction. Therefore, you have one end of the pipe that reads data and one end of the pipe that writes data.
+This "pipeline" between processes is **unidirectional**, meaning data flows in one direction. Therefore, you have one end of the pipe that reads data and one end of the pipe that writes data.\
 	![one-way pipe](https://www.tutorialspoint.com/inter_process_communication/images/pipe_with_one.jpg)
 1. What is the prototype of `pipe()`? What is being stored in the int array you're passing it? (10 mins)
 2. If you're using a pipe to pass data from one process to a second process, which `pipefd` would the 1st process **write** to? Which would the 2nd process **read** from? (10 mins)\
@@ -117,7 +117,7 @@ This "pipeline" between processes is **unidirectional**, meaning data flows in o
 3. Let's try using `pipe` in combination with `fork` and `wait`! Write a program that: (15 mins)
     - takes command-line arguments (i.e. `int argc, char **argv`);
     - creates a **pipe**;
-    - then **fork**s to create a child process;
+    - then **fork** to create a child process;
     - the parent process:
         -  should **close** the pipe end that it doesn't need;
         -  **writes** argv[1] to the correct end of the pipe;

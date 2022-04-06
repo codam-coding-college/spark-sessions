@@ -15,12 +15,12 @@ Project description:
 ### Processes
 Before we get into how to work with processes, it's handy to understand what we actually mean by "process".
 1. What is a process? (5 mins)
-    > a process is a program in execution, an entity which implements a set of instructions (given by the program) in the system.
+    > A process is a program in execution, an entity which implements a set of instructions (given by the program) in the system.
     > processes are identified by their unique process IDs (which is recycled after a process terminates).
     > the two main system calls to create a process are fork and exec.
 
-A process is its own separate entity with its own defined **memory space**. This memory space is what is duplicated by `fork` and rewritten by `exec`, which we'll get to in a bit.
-    Here's a diagram showing how this memory is divided:
+A process is its own separate entity with its own defined **memory space**. This memory space is what is duplicated by `fork` and rewritten by `exec`, which we'll get to in a bit.\
+    Here's a diagram showing how this memory is divided:\
     ![process memory](https://i.imgur.com/nxmmQl3.png)
 
 To put it in really simple terms, you can think of a process like a struct — a collection of information bound to an entity.
@@ -53,8 +53,8 @@ This information includes the process ID, open files, its status, etc. You can r
         - checks for failed forks;
         - if in the **child** process: **decrements** `x` by 1, prints `"This line is from child, x is %d\n"`, and then **returns** 0;
         - else if in the **parent** process: **increments** `x` by 1 and then prints `"This line is from parent, x is %d\n"`.
-    - You should see how the data (the variable `x` in this case) starts with the same initial value in both processes, but that changes to this variable in one process **does not affect** the variable in another process.
-        ![example output](https://i.imgur.com/jOTXMCL.png)
+    - You should see how the data (the variable `x` in this case) starts with the same initial value in both processes, but that changes to this variable in one process **does not affect** the variable in another process.\
+        ![example output](https://i.imgur.com/jOTXMCL.png)\
         *example output - your output order may vary*
     - Here we've specified that child should `return` when it's done. What happens if we comment that out? Try putting another `"x is %d"` statement at the **end of your main** to see.
         -  You should see how the child and parent processes then both execute the code that follows, returning to a common point in the program. Whether or not you want that depends on the program's purpose.
@@ -79,13 +79,13 @@ It's also possible to have your parent process wait on its child processes to te
             > if (WIFEXITED(w_status)) {
         	> printf("Child process exited with status: %d\n", WEXITSTATUS(w_status));}
     - Try tweaking the argument you pass to the `return()` call in your child process. Does the output change accordingly?
-        ![example output](https://i.imgur.com/cFZAZFp.png)
+        ![example output](https://i.imgur.com/cFZAZFp.png)\
         *example output*
 
 Here's a fun short explanation about zombie processes for later: [understanding zombie processes](https://youtu.be/xJ8KenZw2ag)
 
 ### execve
-The `exec()` family of functions allows us to **replace** the current process with a new program.
+The `exec()` family of functions allows us to **replace** the current process with a new program.\
 No new process is created; the PID remains the same. The functions simply have the existing process execute a new program.
 1. What is the prototype of `execve()`? (10 mins)
     - Break down each of function parameters. What does each mean?
@@ -120,7 +120,7 @@ No new process is created; the PID remains the same. The functions simply have t
     >  `int dup2(int oldfd, int newfd);`
     > on success, returns newfd. on failure, -1
 2. What are some differences between `dup` and `dup2` with regards to the new file descriptor? (5 mins)
-    - Here's a diagram to help you visualise the functions better:\
+    - Here's a diagram to help you visualize the functions better:\
         ![dup](https://i.imgur.com/iJ7X39I.png)
     > `dup2` uses specified newfd, `dup` uses lowest-numbered unused fd.
     > `dup2`: If newfd was previously open, it is silently closed before being reused.
@@ -149,8 +149,7 @@ No new process is created; the PID remains the same. The functions simply have t
 ## Bonus
 ### pipe
 `pipe()` allows data to be passed from one process to another.
-This "pipeline" between processes is **unidirectional**, meaning data flows in one direction.
-Therefore, you have one end of the pipe that reads data and one end of the pipe that writes data.\
+This "pipeline" between processes is **unidirectional**, meaning data flows in one direction. Therefore, you have one end of the pipe that reads data and one end of the pipe that writes data.\
     ![one-way pipe](https://www.tutorialspoint.com/inter_process_communication/images/pipe_with_one.jpg)
 1. What is the prototype of `pipe()`? What is being stored in the int array you're passing it? (10 mins)
     > `int pipe(int pipefd[2]);`
