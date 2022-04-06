@@ -1,5 +1,5 @@
 # Spark Session: minishell
-*updated: 30/06/2021*
+*updated: 06/04/2021*
 
 Project description:
 > Create a simple shell
@@ -17,7 +17,7 @@ Before we get into how to work with processes, it's handy to understand what we 
 1. What is a process? (5 mins)
     > A process is a program in execution, an entity which implements a set of instructions (given by the program) in the system.
     > processes are identified by their unique process IDs (which is recycled after a process terminates).
-    > the two main system calls to create a process are fork and exec.
+    > The `exec` family of functions implements the system call that creates a process.
 
 A process is its own separate entity with its own defined **memory space**. This memory space is what is duplicated by `fork` and rewritten by `exec`, which we'll get to in a bit.\
     Here's a diagram showing how this memory is divided:\
