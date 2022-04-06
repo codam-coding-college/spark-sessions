@@ -1,0 +1,3 @@
+[submodule "markdown-to-pdf"]
+	path = markdown-to-pdf
+	url = git@github.com:codam-coding-college/markdown-to-pdf.git
