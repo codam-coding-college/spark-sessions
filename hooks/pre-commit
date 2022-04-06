@@ -18,7 +18,7 @@ while IFS= read -r FILE_NAME; do
 			cd markdown-to-pdf/
 			npm install
 			npm run build
-			cd $CURRENT_PWD
+			cd "$CURRENT_PWD"
 		fi
 		FILE=$(basename "$FILE_NAME")
 		NAME="${FILE%.*}.pdf"
