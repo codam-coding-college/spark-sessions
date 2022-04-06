@@ -16,7 +16,7 @@ Project description:
 Before we get into how to work with processes, it's handy to understand what we actually mean by "process".
 1. What is a process? (5 mins)
     > A process is a program in execution, an entity which implements a set of instructions (given by the program) in the system.
-    > processes are identified by their unique process IDs (which is recycled after a process terminates).
+    > Processes are identified by their unique process ID (which is recycled after it terminates).
     > The `exec` family of functions implements the system call that creates a process.
 
 A process is its own separate entity with its own defined **memory space**. This memory space is what is duplicated by `fork` and rewritten by `exec`, which we'll get to in a bit.\
