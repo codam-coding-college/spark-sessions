@@ -193,7 +193,7 @@ And here's a couple other things that could be helpful to look into for your pro
 - finite state machines
 
 
-```
+```c
 // example solution for pipe exercise
 #include <stdio.h>
 #include <sys/wait.h>
