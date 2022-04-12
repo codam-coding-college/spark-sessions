@@ -16,7 +16,7 @@
 #### What are the differences between processes and threads ~ 5(min)
 
 _Does not have to be exactly like this but make sure that every one gets the difference bewteen threads and processes_
-##### Answear
+##### Answer
 <img width="1248" alt="Screen Shot 2022-04-09 at 10 07 36 PM" src="https://user-images.githubusercontent.com/47741591/162590014-ec9250c1-efb2-43e1-bd7f-9bee759e5ebf.png">
 
 # Ex 01 ~(20min)
@@ -53,7 +53,7 @@ Hi From thread. You can call me philosopher 0
 2. What arguments does the function take?
 3. What is void \*\*value_ptr used for?
 ---
-###### ANSWEAR
+###### Answer
 
 ```C
 #include <stdio.h>
@@ -107,7 +107,7 @@ Hi From thread. You can call me philosopher 0
 Hi From thread. You can call me philosopher 0
 ```
 
-###### ANSWEAR
+###### Answer
 
 ```C
 #include <stdio.h>
@@ -147,13 +147,13 @@ int	main()
 2. What is a critical section?
 
 How to spot race conditions?
-##### Answear 
+##### Answer
 ```-fsanitize=thread```
 
 Do you see a data race in this code?
 
 ```C
-//example code
+// example code
 #include <stdio.h>
 #include <pthread.h>
 
@@ -170,7 +170,7 @@ void	*rutine(void *ptr)
 int	main()
 {
 	pthread_t	thread;
-	int		index;
+	int			index;
 
 	index = 0;
 	pthread_create(&thread, NULL, rutine, &index);
@@ -184,11 +184,10 @@ int	main()
 ```
 ### What are mutexes?
 
-	What is the pthread_mutex_t data type?
-    
-### pthread_mutex_init ~ 5(min)
+What is the pthread_mutex_t data type?
 
-	What does this function do?
+### pthread_mutex_init ~ 5(min)
+What does this function do?
 
 ### pthread_mutex_destroy ~ 5(min)
 
@@ -197,19 +196,15 @@ int	main()
 
 ### pthread_mutex_lock ~ 5 (min)
 
-![image](https://user-images.githubusercontent.com/47741591/162641384-72f74c56-fbe1-41d2-9e72-5ecb59019dba.png)
-
 	What does this function do?
 	Can you lock a mutex that is not inited?
 
 ### pthread_mutex_unlock ~ 25 (min)
 
-![image](https://user-images.githubusercontent.com/47741591/162641393-60777fe9-a1bd-4660-aed0-c512019aee4d.png)
-
 	What does this function do?
 	What happens when u unlock a mutex 2times?
 
-Goal:	
+Goal:
 Make a program that inits, locks, unlock and destroys a mutex!
 
 ```C
@@ -243,7 +238,7 @@ When does a deadlock occur?
 Goal:
 Produce a program that has a deadlock.
 
-### Answear
+### Answer
 
 ```C
 #include <pthread.h>
@@ -262,8 +257,6 @@ int	main()
 ```
 
 # Break
-
-![image](https://user-images.githubusercontent.com/47741591/162641349-a2107f6e-85d9-47bf-8b9e-38a91aaa76d6.png)
 
 # ex05
 creat 20 threads that will print the following
@@ -293,7 +286,7 @@ Hi From thread. You can call me philosopher 20
 Hi From thread. You can call me philosopher 21
 ```
 
-##### Answear
+##### Answer
 
 ```C
 #include <stdio.h>
@@ -339,7 +332,7 @@ int	main()
 
 # Bonus
 
-make a program that will use 3 created threads to add up an int to 42. Threads can increment the int every .5sec
+Make a program that will use 3 created threads to add up an int to 42. Threads can increment the int every .5sec
 once the value is 42 the program has to print "Got it!\n" and exit.
 
 catch:
@@ -347,7 +340,7 @@ The threads do not know when the value is 42
 
 What is a monitoring thread?
 
-a monitoring thread is a concept used in the philosopher's project. a monitoring thread will keep track of the int variable. If the value is 42 let the threads know to finish and exit.
+A monitoring thread is a concept used in the philosopher's project. a monitoring thread will keep track of the int variable. If the value is 42 let the threads know to finish and exit.
 
 ```C
 #include <stdio.h>
@@ -401,5 +394,3 @@ int	main()
 	return (0);
 }
 ```
-
-![image](https://user-images.githubusercontent.com/47741591/162580113-4eb7f53e-cdd5-4055-8174-e06392e301fc.png)
