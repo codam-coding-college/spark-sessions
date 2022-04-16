@@ -15,7 +15,7 @@ This tutorial was written by de la Hamette Leon Jean Laurenti, [click here](http
 4. Events & Hooks
 
 ### Window Management
-Our first step will be to open up some windows! (30 mins)
+Our first step will be to open up a window! (30 mins)
 
 1. In the set-up instructions, Some code was given to you for your `main.c` that included a call to `mlx_init`.  
     But what does it do and what is its prototype? What does it return? (5 mins)
@@ -36,7 +36,7 @@ Our first step will be to open up some windows! (30 mins)
 
 ***Break (5 mins)***
 
-### Pixel Putting
+### Images & Pixel Putting
 Time to put something on that empty window. (60 mins)
 
 1. Let there be colourful pixels! As of now your window is pretty much void of anything. Just like a painter we need a canvas to draw on, its time to learn about images in MLX...
@@ -45,40 +45,14 @@ Time to put something on that empty window. (60 mins)
 	- Study and understand the return value type and its layout!
     - Once you understand that, go ahead and initialise an image with a size of the window.
 
-2. We now need to display our canvas, to do so, use `mlx_image_to_window`.
+2. MLX already provides a function to put a pixel onto an image, however, it is of more value to actually understand what is going on behind the scenes.
+	- What does the function do?
+	- How does it achieve the actual 'putting' of a pixel?
+	- What can we learn about how colors are represented?
 
-2. In order to know where we can put our pixels, we need to get the **memory address** of our image. That's where `mlx_get_data_addr` comes in. What arguments does it take and what does it return? (10 mins)
+3. Time to become Bob Ross and draw a nice little pixel, put a **white** pixel in the **middle** of your image.
 
-3. Since the function requires a lot of extra variables, let's keep things neat by using a struct for our image data. (10 mins)
-    ```
-    typedef struct s_img
-    {
-    	void	*img_ptr;
-    	char	*address;
-    	int		bits_per_pixel;
-    	int		line_size;
-    	int		endian;
-    }				t_img;
-    ```  
-    - Notice that we shifted the image pointer into the struct. Adjust your initialisation of `mlx_new_image` accordingly.
-    - Then call `mlx_get_data_addr` and pass it the appropriate arguments/references.
-
-5. As explained in point #1, `mlx_pixel_put` is rather inefficient, so here's a much faster version to use in your code: (10 mins)  
-    ```
-    void    my_pixel_put(t_img *img, int x, int y, unsigned int colour)
-    {
-    	char	*dst;
-    	int		offset;
-    
-    	offset = y * img->line_size + x * (img->bits_per_pixel / 8);
-    	dst = img->address + offset;
-    	*(unsigned int *)dst = colour;
-    }
-    ```
-    - What is this function doing? What is `offset`?
-7. Now, using your `my_pixel_put` function, put a **white** pixel in the **middle** of your image. (10 mins)
-
-8. Our image is all ready to be shown! Let's look at `mlx_put_image_to_window`. What parameters does it take?  
+5. Our image/canvas is all ready to be shown! Let's look at `mlx_image_to_window`. What parameters does it take?  
     Add the function to your code and see if your little white dot is showing in your window. (10 mins)
 
 ***Break (5 mins)***
@@ -86,29 +60,34 @@ Time to put something on that empty window. (60 mins)
 ### More Pixels
 Let's get fancier. Now we're gonna try drawing *lines*. (25 mins)
 
-1. Draw a single horizontal white line running across the middle of the entire screen. You'll need to call `my_pixel_put` in a loop. (15 mins)
+1. Draw a single horizontal white line running across the middle of the entire screen. You'll need to call `mlx_pixel_put` in a loop. (15 mins)
 
 2. Now draw a single vertical white line down the middle of the entire screen. You should end up with what looks like a crosshair in your window. (10 mins)
 
 &nbsp;  
-### Events & Hooks
-Having to do `Ctrl-C` every time is probably getting annoying. Let's learn how to close the window when the 'X' button of your window (not your keyboard) is pressed. (35 mins)
+### Hooks
+You might have noticed that we can already very easily close our window, however we are not properly taking care of our resources. So lets see how we can hook onto the 'X' close button to do just that. (35 mins)
 
-1. Hooks, along with events, are vital to making your program interactive. They allow you to intercept keyboard or mouse events and respond to them. You can think of hooks as functions that get called when an event occurs.  
-    What is the prototype for `mlx_hook`? *(Hint: you may have to look it up in mlx.h)* (5 mins)
+1. Hooks, are vital to making your program interactive. They allow you to intercept keyboard or mouse events and respond to them. You can think of hooks as functions that get called when an event occurs. MLX provides 2 types of hooks, specialized and generic ones.
+	- What exactly are generic and specialized hooks ?
+	- Here's something that might help you understand: [Hooks](https://github.com/codam-coding-college/MLX42/wiki/Hooks)
 
-2. miniLibX uses the event codes and masks set out in the [**X11** library](https://code.woboq.org/qt5/include/X11/X.h.html). What do event codes and masks do? (5 mins)
+2. Regarding hooking onto the keyboard, MLX provides a header file that neatly displays all the different keycodes.
+
+
+
+3. miniLibX uses the event codes and masks set out in the [**X11** library](https://code.woboq.org/qt5/include/X11/X.h.html). What do event codes and masks do? (5 mins)
     - Here's something that might help you understand: [event processing](https://tronche.com/gui/x/xlib/events/processing-overview.html)
 
-3. What are the **event codes** and **masks** for key presses, key releases, and the 'X' close button? (10 mins)
+4. What are the **event codes** and **masks** for key presses, key releases, and the 'X' close button? (10 mins)
     - Here's a really helpful resource: [handling mouse and keys](https://github.com/VBrazhnik/FdF/wiki/How-to-handle-mouse-buttons-and-key-presses%3F)
     - **Watch out**: the Linux event code for the 'X' close button is different than on macOS. Whereas Mac users can use the code for "DestroyNotify", Linux (and WSL) users will need the code for "ClientMessage".
 
-4. Write a function that: (10 mins)
+5. Write a function that: (10 mins)
     - takes as its argument a **pointer to a struct** containing at least your mlx pointer and window pointer *(either make a new struct or expand your existing one)*;
     - destroys your window and exits your program.
 
-5. Add a call to `mlx_hook` in your main that calls this exiting function when the 'X' button is pressed. (5 mins)
+6. Add a call to `mlx_hook` in your main that calls this exiting function when the 'X' button is pressed. (5 mins)
     - Does your window close now when you press the 'X' close button on your window?
 
 ### Bonus
