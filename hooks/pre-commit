@@ -6,12 +6,13 @@ set -e
 MOD_FILES=$(git diff --diff-filter=d --cached --name-only)
 DATE=$(date +%d\\/%m\\/%Y)
 while IFS= read -r FILE_NAME; do
-	if [[ "${FILE_NAME}" =~ \.md ]] && [[ ! "${FILE_NAME}" = "README.md" ]]; then
-		if [$(shell uname) = "Linux"]; then
+	if [[ "${FILE_NAME}" =~ \.md ]] && [[ ! "${FILE_NAME}" = "README.md" ]] && [[ "${FILE_NAME}" == spark-sessions* ]] && [[ "$(basename "${FILE_NAME}")" == SparkSession* ]]; then
+		if [[ "$OSTYPE" == "linux-gnu"* ]]; then
 			sed -i "2s/.*/\*updated\: $DATE\*/" "$FILE_NAME"
 		else
 			sed -i '' "2s/.*/\*updated\: $DATE\*/" "$FILE_NAME"
 		fi
+		echo "Updated date to: ${DATE}"
 		git add "$FILE_NAME"
 		if [ ! -f "markdown-to-pdf/build/app.js" ]; then
 			CURRENT_PWD=$(pwd)
@@ -24,6 +25,7 @@ while IFS= read -r FILE_NAME; do
 		NAME="${FILE%.*}.pdf"
 		node markdown-to-pdf/build/app.js "$FILE_NAME" "pdfs/$NAME"
 		git add "pdfs/$NAME"
+		echo
 	fi
 done <<< "$MOD_FILES"
 
