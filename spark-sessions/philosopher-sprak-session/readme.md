@@ -51,7 +51,7 @@ int	main()
 
 Now that you know what it means not to **shear memory space**, if instead of 2 **processes** we would have 2 **threads** what will be printed?
 ```C
-pseudo code
+pseudo-code
 
 int	main()
 {
@@ -109,14 +109,14 @@ int	printf(const char * restrict format, ...);
 2. What is void \*\*value_ptr used for?
 
 ```sh
-# some thing like this
+# something like this
 $ ./thread
 Hi From thread. You can call me philosopher 0
 ```
 
 Now let's try creating **threads** in a loop.
 
-creat 20 **threads** that will print the following.
+Create 20 **threads** that will print the following.
 
 ```ascii
 Hi From thread. You can call me philosopher 0
@@ -196,7 +196,7 @@ int	pthread_mutex_destroy(pthread_mutex_t *mutex);
 int	pthread_mutex_lock(pthread_mutex_t *mutex);
 int	pthread_mutex_unlock(pthread_mutex_t *mutex);
 ```
-Change the pseudo to acctual code
+Change the pseudo to actual code
 ```C
 int	main()
 {
@@ -242,6 +242,85 @@ What is a deadlock? When does a deadlock occur? Let's do some googling.
 Goal:
 Produce a program that has a deadlock.
 
+## Why not use threads?
+It seams that having more threads would speed things up, but it's not always the case.
+Bellow, 2 programs add up to INT_MAX / 100. One uses 20 threads and one uses just one. Which will be faster?
+
+```C
+#include <limits.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <pthread.h>
+
+typedef struct s_list
+{
+	int		*num;
+	pthread_mutex_t	lock;
+}	t_list;
+
+#define MAX_PHILO 20
+
+void	*rutine(void *ptr)
+{
+	t_list	*philo = ptr;
+
+	while (1)
+	{
+		pthread_mutex_lock(&philo->lock);
+		if (*philo->num > INT_MAX / 100)
+		{
+			pthread_mutex_unlock(&philo->lock);
+			return (NULL);
+		}
+		*philo->num += 1;
+		pthread_mutex_unlock(&philo->lock);
+	}
+	return (NULL);
+}
+
+int	main()
+{
+	pthread_t	thread[MAX_PHILO];
+	t_list		philosopher[MAX_PHILO];
+	int		*x = malloc(sizeof(int));
+
+	*x = 0;
+	for (int i = 0; i < 20; i++)
+	{
+		pthread_mutex_init(&philosopher[i].lock, NULL);
+		pthread_mutex_lock(&philosopher[i].lock);
+		philosopher[i].num = x;
+		pthread_mutex_unlock(&philosopher[i].lock);
+		pthread_create(&thread[i], NULL, rutine, &philosopher[i]);
+	}
+	for (int i = 0; i < MAX_PHILO; i++)
+	{
+		pthread_join(thread[i], NULL);
+		pthread_mutex_destroy(&philosopher[i].lock);
+	}
+	printf("%d\n", *philosopher[0].num);
+	free(philosopher[0].num);
+	return (0);
+}
+```
+```C
+#include <limits.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <pthread.h>
+
+int	main()
+{
+	int	x;
+
+	x = 0;
+	while (x < INT_MAX / 100)
+	{
+		x++;
+	}
+	printf("%d\n", x);
+}
+```
 Goal:
 Creat 20 **threads** that will print the following
 the order does not matter
