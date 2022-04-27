@@ -6,13 +6,14 @@ Session description:
 
 This tutorial was written by de la Hamette Leon Jean Laurenti, [click here](https://github.com/codam-coding-college/MLX42/wiki) for the documentation regarding MLX42.
 
-**Hint: Most question you will have will most likely be answered by reading the documentation or the MLX42.h file!**
+**Hint: Most question you will have will most likely be answered by simply reading the documentation or the MLX42.h file!**
 
 ## Topics
 1. Window Management
-2. Pixel Putting
+2. Images & Pixel Putting
 3. More Pixels
-4. Events & Hooks
+4. Hooks
+4. Bonus!
 
 ### Window Management
 Our first step will be to open up a window! (30 mins)
@@ -47,7 +48,7 @@ Time to put something on that empty window. (60 mins)
 
 2. Now, using the `mlx_put_pixel` function, put a **white** pixel in the **middle** of your image. (10 mins)
 	- How do you define colors?
-	- Understand how this function works, that is, how does it modify the image.
+	- Understand how this function works, that is, how does it modify the image itself.
 
 3. Our image is all ready to be shown! To do so, use `mlx_image_to_window`. MLX42 works with instances of images, that is, an image is like a 'painting' while an instance is a 'physical copy' of that painting.
 	- What are the prototypes and the return value for the function?
@@ -64,57 +65,42 @@ Let's get fancier. Now we're gonna try drawing *lines*. (25 mins)
 
 &nbsp;  
 ### Hooks
-You might have noticed that we can already very easily close our window, however we are not properly taking care of our resources. So lets see how we can hook onto the 'X' close button to do just that. (35 mins)
+You might have noticed that we can already very easily close our window, however, just because for this exercise, we want to actually intercept the execution when we press the 'X' close button. (35 mins)
 
 1. Hooks, are vital to making your program interactive. They allow you to intercept keyboard or mouse events and respond to them. You can think of hooks as functions that get called when an event occurs. MLX provides 2 types of hooks, specialized and generic ones.
 	- What exactly are generic and specialized hooks ?
 	- Here's something that might help you understand: [Hooks](https://github.com/codam-coding-college/MLX42/wiki/Hooks)
 
-2. Regarding hooking onto the keyboard, MLX provides a header file that neatly displays all the different keycodes.
+2. Write a function that: (10 mins)
+	- Gets executed when we click onto the 'X' close button.
+    - Prints the window title with a nicely formatted message.
 
+3. Add a call to `mlx_close_hook` in your main that calls this exiting function when the 'X' button is pressed. (5 mins)
+    - Does your window close and print a message when you press the 'X' close button on your window?
 
+### Bonus!
+Let's get some movement on the screen: Make a rectangle move in 4 directions!
 
-3. miniLibX uses the event codes and masks set out in the [**X11** library](https://code.woboq.org/qt5/include/X11/X.h.html). What do event codes and masks do? (5 mins)
-    - Here's something that might help you understand: [event processing](https://tronche.com/gui/x/xlib/events/processing-overview.html)
+1. Make a `ft_draw_rect` function that:
+   - Takes the MLX pointer.
+   - Takes a width and height value.
+   - Takes a color value for the rectangle.
+   - Creates a new image of that width and height.
+   - Sets every pixel in the image to the specified color.
+   - Returns the image pointer.
 
-4. What are the **event codes** and **masks** for key presses, key releases, and the 'X' close button? (10 mins)
-    - Here's a really helpful resource: [handling mouse and keys](https://github.com/VBrazhnik/FdF/wiki/How-to-handle-mouse-buttons-and-key-presses%3F)
-    - **Watch out**: the Linux event code for the 'X' close button is different than on macOS. Whereas Mac users can use the code for "DestroyNotify", Linux (and WSL) users will need the code for "ClientMessage".
-
-5. Write a function that: (10 mins)
-    - takes as its argument a **pointer to a struct** containing at least your mlx pointer and window pointer *(either make a new struct or expand your existing one)*;
-    - destroys your window and exits your program.
-
-6. Add a call to `mlx_hook` in your main that calls this exiting function when the 'X' button is pressed. (5 mins)
-    - Does your window close now when you press the 'X' close button on your window?
-
-### Bonus
-Let's get some movement on screen: make your crosshair move in 4 directions!  
-
-First, however, let's make our crosshair smaller, because who needs a crosshair that big?
-
-1. Expand your struct to include **at least** the following variables you'll need for your drawing function:
-    - object width & height;
-    - starting x & y positions (i.e. the coordinates of the leftmost pixel of your crosshair).
-
-2. Make a `draw_crosshair` function that:
-    - accepts your data/game struct as its parameter;
-    - can render a crosshair of a particular **width** and **height**, instead of only the height/width of the screen;
-    - renders that crosshair in the **middle of the screen** *(you'll have to do some math using the object dimensions and starting positions, sorry)*;
-    - calls `mlx_put_image_to_window` at the end.  
-3. Get a **30 x 30** pixel crosshair onto your window. Did it work?
+2. Get a **30 x 30** blue rectangle onto your window.
 
 Now let's hook into keyboard events!
-1. Add a call to `mlx_hook` in your main that calls a function `keypress` when keys are...well, pressed.
+1. Add a call to `mlx_loop_hook` in your main that calls a function `ft_on_key` so we can handle key presses.
+	- You can also use `mlx_key_hook`.
 
-2. Write that `keypress` function that:
-    - calls your exit function when the `ESC` key is pressed;
-    - moves the crosshair up, down, left, and right when the corresponding key is pressed.
-        - you can choose to use the arrow keys or `W`-`A`-`S`-`D` keys.
-        - I've included helpful diagrams below for the keycodes you'll need.
+2. Write the `ft_on_key` function so that:
+    - It closes the window/exits when the `ESC` key is pressed.
+    - Moves the rectangle, up, down, left, and right when the corresponding key is pressed.
+        - You can choose to use the arrow keys or `W`-`A`-`S`-`D` keys.
 
-3. Add a call to `mlx_loop_hook` in your main that calls a function to render the new image with the modified object coordinates.
+3. Regarding hooking onto the keyboard, MLX provides a header file that neatly displays all the different keycodes. Which are set out
+in the [**GLFW** library](https://www.glfw.org/docs/3.3/group__keys.html).
 
-4. Do you now have a crosshair that can move across your screen?
-    - If you're seeing a trail of crosshairs, you're probably not rendering the background each time.
-    - If your program is crashing when you hit one of the walls, perhaps you should add checks to your keypress function.
+4. Add a call to `mlx_loop_hook` in your main that calls a function to move the new rectangle, of course don't forget to create it first!
