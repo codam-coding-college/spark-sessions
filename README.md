@@ -9,6 +9,8 @@ Each session consists of a couple exercises to help students understand some cor
 
 Each session is hosted by 1 or more moderators, they are students that are very comfortable with the project. They help the attendees run through the exercises.
 
+See `./philosophy/` for more information.
+
 ## Development
 Install `NodeJS >= 16.x`
 
