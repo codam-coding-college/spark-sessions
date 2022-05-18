@@ -1,5 +1,5 @@
 # Spark Session: MLX42
-*Updated: 30/03/2022*
+*updated: 18/05/2022*
 
 Session description:
 > Learn the basics of working with MLX42
