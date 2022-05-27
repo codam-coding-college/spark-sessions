@@ -1,29 +1,30 @@
 # Topics
-1. Thr*e*ads.
-2. Data rac*e*s.
-3. Mut*e*x*e*s.
-4. D*e*adlocks.
+1. Threads.
+2. Data Races.
+3. Mutexes.
+4. Deadlocks.
 
-# L*e*ts talk __Thr*e*ads__
-__Thr*e*ads__ are a part of proc*e*ss*e*s. Ev*e*ry proc*e*ss is built of many parts, addr*e*ss spac*e*, m*e*mory spac*e*, PID, __"thr*e*ad of *e*x*e*cution"__, *e*nvironm*e*nt, *e*tc.. In 2001 th*e* first Multicor*e* proc*e*ssors w*e*r*e* introduc*e*d, and th*e* ability to add mor*e* thr*e*ads p*e*r proc*e*ss cam*e* along. __Proc*e*ss*e*s__ do not __sh*e*ar m*e*mory space__ with oth*e*r proc*e*ss*e*s and hav*e* additional information associat*e*d with th*e*m lik*e* PID, nam*e* spac*e*, *e*tc, but __thr*e*ads__ ar*e* mor*e* lightw*e*ight and sh*e*ar m*e*mory spac*e* with oth*e*r thr*e*ads b*e*longing to th*e* sam*e* proc*e*ss.
+# Lets talk __Threads__
+__Threads__ are a part of processes. Every processes is built of many parts, address space, memory space, PID, __"Thread of execution"__, enviorment, etc.. In 2001 the first Multicore processesors were introduced and the ability to add more Threads per processes came along. __processes__ do not __share memory space__ with other processes and have additional information associated with them like PID, name space, etc, but __Threads__ are more lightweight and share memory space with other Threads belonging to the same processes.
 
-This is what I __m*e*an__ by that a proc*e*ss has a __thr*e*ad__.
+This is what I __mean__ by that a processes has a __Thread__.
 
 <img width="547" alt="Screen Shot 2022-05-09 at 3 28 42 PM" src="https://user-images.githubusercontent.com/47741591/167420512-c56cd56a-757b-4177-be03-a990bf2b982a.png">
 
 [after the session more on the same topic](https://csc-knu.github.io/sys-prog/books/Andrew%20S.%20Tanenbaum%20-%20Modern%20Operating%20Systems.pdf#page=134)
+##### Can you answear these qestions?
+1. What is a Thread?
 
-1. What is a thr*e*ad?
 ##### Answer
 > One way of looking at a process is that it is a way to group related resources.  A process has an address space containing program text and data and other resources. These resources may include open files, child processes, pending alarms, signal handlers, accounting information, and more. By putting them together in the form of a process, they can be managed more easily. The other concept a process has is a ***thread*** of execution, usually shortened to just ***thread***.  The  ***thread***  has a  program counter that keeps track of which instruction to execute next.   It has registers,  which hold its current working variables. It has a  stack,  which contains the execution history, with one frame for each procedure called but not yet returned from. Although a  ***thread***  must execute in some process,  the  ***thread***  and its process are different concepts and can be treated separately.  Processes are used to group resources together;  ***threads***  are the entities scheduled for execution on the CPU. 
-2. What do*e*s it m*e*an that *e*v*e*ry proc*e*ss has a thr*e*ad?
+2. What does it mean that every processes has a Thread?
+
 ##### Answear
 > The other concept a process has is a thread of execution, usually shortened to just thread. The thread has a program counter that keeps track of which instruction to execute next
 
-***Program one*** uses ***fork*** to creat a new ***process***. ***Processes*** ***do not shear memory space***.
+***Program one*** uses `fork()` to creat a new ***process***. ***Processes*** ***do not shear memory space***.
 
 ```C
-//Program one writen in pseudocode
 #include <stdio.h>
 #include <unistd.h>
 #include <sys/wait.h>
@@ -34,27 +35,23 @@ int main()
     pid_t   pid;
 
     x = 25;
-    make_process();
-    child
+    pid = fork();
+    if (pid == 0)//child process
     {
         printf("Child value %d\n", x++);
-        sleep(1);
         printf("Child value %d\n", x++);
-        sleep(1);
         printf("Child value %d\n", x++);
-        sleep(1);
         printf("Child value %d\n", x++);
-        sleep(1);
     }
-    parent
+    else
     {
-        sleep(5);
-        printf("Parent value %d\n", x);
-        wait(0);
+        pid = wait(0);
+	printf("Parent value %d\n", x);
     }
     return (0);
 }
 ```
+
 `gcc Program_one.c; ./a.out #what can we expect the x value to be in parent?` 
 ##### Answer  
 
@@ -68,48 +65,59 @@ int main()
 > 
 > Parent value 25
 
-***Program two*** uses __pthr*e*ad_cr*e*at*e*__ to creat a new __thr*e*ad__. __Thr*e*ads__ do not shear __memory spac*e*__.
+***Program two*** uses `pthread_create` to creat a new __Thread__. __Threads__ do not share __memory space__.
 
 ```C
-//Program_two writen in pseudocode
+#include <pthread.h>
+#include <stdio.h>
+
+void	*rutine(void *x)
+{
+	//2nd thread
+	printf("new thread value %d\n", *(int*)x);
+	*(int*)x += 1;
+	printf("new thread value %d\n", *(int*)x);
+	*(int*)x += 1;
+	printf("new thread value %d\n", *(int*)x);
+	*(int*)x += 1;
+	printf("new thread value %d\n", *(int*)x);
+	*(int*)x += 1;
+	return (NULL);
+}
+
 int main()
 {
-    int x;
+	int		x;
+	pthread_t	thread;
 
-    x = 25;
-    make_a_thread();
-    thread
-    {
-        printf("new thread value %d\n", x++);
-        sleep(1);
-        printf("new thread value %d\n", x++);
-        sleep(1);
-        printf("new thread value %d\n", x++);
-        sleep(1);
-        printf("new thread value %d\n", x++);
-        sleep(1);
-    }
-    main thread
-    {
-        sleep(5);
-        printf("Main thread value %d\n", x);
-    }
-    return (0);
+	x = 25;
+	pthread_create(&thread, NULL, rutine, &x);
+	//main thread
+	pthread_join(thread, NULL);
+	printf("Main thread value %d\n", x);
+	return (0);
 }
 ```
-`gcc Program_two.c; ./a.out #what can we expect the x value to be in parent?` 
-
+`gcc Program_two.c; ./a.out #what can we expect the x value to be in thread?`
 ##### Answer
-> 29
-
-1. What do*e*s it m*e*an to sh*e*ar __m*e*mory spac*e*__ in s*e*ns*e* of varibl*e*s?
+> new thread value 25
+> 
+> new thread value 26
+> 
+> new thread value 27
+> 
+> new thread value 28
+> 
+> Main thread value 25
+##### Can you answear these qestions:
+1. What does it mean to share __memory space__ in sense of varibles?
 ##### Answer
 > It means that you have access to the varibles for the seprate threads if you wish
-2. Why is it useful to sh*e*ar __m*e*mory spac*e*__?
+2. Why is it useful to share __memory space__?
 ##### Answer
 > You don't need to use pipes or signals to communicate information.
 
-# One a practical not*e* 🧶
+# One a practical note 🧶
 
 #### Allowed functions:
 
@@ -117,72 +125,128 @@ int main()
 #include <stdio.h>
 #include <pthread.h>
 
-int	pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*start_routine)(void ), void *arg);
+int	pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*start_routine)(void *), void *arg);
 int	pthread_join(pthread_t thread, void **value_ptr);
 int	printf(const char  *restrict format, ...);
 ```
 
-### pthread_t
-1. What **data** type is pthread_t?
+### `pthread_t`
+`pthread_t` is a data type used to store Thread information. Maybe you have seen `pid_t` data type before? Then this is kind of simillar but in stead of process id which `pid_t` stores we store Thread info.
+
+##### Can you answear these qestions:
+
+1. What **data** type is `pthread_t`?
 ##### Answer
 > It is used to store threads
-2. Why us*e* pthr*e*ad_t not an __int__?
+2. Why use `pthread_t` and not an __int__?
 ##### Answer
-> int can not store all the info that a thread type needs
+> int cannot store all the info that a thread type needs.
 
-### pthread_create
-1. What __argum*e*nts__ do*e*s th*e* __pthr*e*ad_create__ tak*e*?
+### `pthread_create`
+
+##### Explination:
+Just as it sounds `pthread_create` will make a new thread! Its super similar to `fork` but it makes a new proccess in stead of a thread.
+
+##### Example:
+```C
+#include <pthread.h>
+
+void	*rutine(void *ptr)
+{
+	(void)ptr;
+	return (NULL);
+}
+
+int main()
+{
+	pthread_t	thread;
+
+	pthread_create(&thread, NULL, rutine, 0);
+	return (0);
+}
+```
+
+##### Can you answear these qestions:
+
+1. What __arguments__ does the `pthread_create` take?
 
 ##### Answer
-> It take 3 Args. a thread mem address, a function pointer, void mem address
+> It take 3 Args. a thread mem address, a function pointer and a void mem address
 
-2. What is void \*(\*start_routin*e*)(void \*)?
+2. What is void `*(*start_routine)(void *)`?
 
 ##### Answer
-> A functions pointer which returns void * and takes void *
+> A functions pointer which returns `void *` and takes `void *`
 
-3. What is *e*x*e*cut*e*d wh*e*n pthr*e*ad_cr*e*at*e* is call*e*d?
+3. What is executed when `pthread_create` is called?
 
 ##### Answer
 > start_routine 
 
-4. How would you pass __data__ to th*e* start_routin*e* function?
+4. How would you pass __data__ to the `start_routine` function?
 
 ##### Answer
 > You would pass it as the 4rd arg to pthread_create
 
-5. What is th*e* attr argum*e*nt?
+5. What is the `attr` argument?
 
 ##### Answer
 > attr allows you to set characteristics of a thread
 
-6. Why us*e* pthr*e*ad_cr*e*at*e*?
+6. Why use `pthread_create`?
 
 ##### Answer
-> To create a thrad with in a process
+> To create a Thread with in a process
 
-7. Why not us*e* fork in st*e*ad of pthr*e*ad_cr*e*at*e*?
+7. Why not use `fork` in stead of `pthread_create`?
+
 ##### Answer
-> Because frok make a new process and pthread_create creates a new thread
+> Because fork make a new process and pthread_create creates a new thread
 
-### pthread_join
-1. What argum*e*nts do*e*s th*e* function tak*e*?
+### `pthread_join`
+
+Explination:
+Just as it sounds `pthread_join` will join a thread to the main thread!
+[threads are a little bit like jarn](https://www.youtube.com/watch?v=uA8X5zNOGw8&t=240s)
+
+##### Example:
+```C
+#include <pthread.h>
+
+void	*rutine(void *ptr)
+{
+	(void)ptr;
+	return (NULL);
+}
+
+int main()
+{
+	pthread_t	thread;
+
+	pthread_create(&thread, NULL, rutine, 0);
+	pthread_join(thread, NULL);
+	return (0);
+}
+```
+##### Can you answear these qestions:
+
+1. What arguments does the function take?
 
 ##### Answer
 > value of the thread, a memory address of type void pointer
 
-2. What is void \*\*valu*e*_ptr us*e*d for?
+2. What is `void **value_ptr` used for?
 
 ##### Answer
 > to get the value returned from start_routine
 
-3. What hpp*e*ns if you do not call __pthr*e*ad_join__ aft*e*r __pthr*e*ad_cr*e*ate__
+3. What hppens if you do not call `pthread_join` after `pthread_create`
 
 ##### Answer
 > the main process will exit and the create thread will exit
 
 ## Goal 🎯
-Cr*e*at*e* a n*e*w thr*e*ad that outputs this m*e*ssag*e*!
+Create a new Thread that outputs this message!
 ```sh
 $ ./ex01.out
 Hi From the thread. You can call me philosopher 1
@@ -209,10 +273,10 @@ int	main()
 }
 ```
 
-#### L*e*arn how to cr*e*at*e* thr*e*ads in a loop. Cr*e*at*e* 20 thr*e*ads that will print th*e* following.
+#### Learn how to create Threads in a loop. Create 20 Threads that will print the following.
 
-## Goal 🎯
-#### Achi*e*v*e* this output
+## Can you code this? 🎯
+#### Achieve this output
 
 ```ASCII
 Hi From the thread. You can call me philosopher 1
@@ -265,36 +329,36 @@ int	main()
 	return (0);
 }
 ```
-## Data rac*e*s/rac*e* conditions
+## Data Races/race conditions
 
-[Whatch a vid*e*o about data rac*e*s till 9:10](https://www.youtube.com/watch?v=FY9livorrJI)
+[Whatch a video about data Races till 9:10](https://www.youtube.com/watch?v=FY9livorrJI)
 
-1. What ar*e* __data rac*e*s?__
+##### Can you answear these qestions:
+
+1. What are __data Races?__
 
 ##### Answer
-> A data race is when data values become unpredeictable because two or more threads are writing to the same variable.
+> A data race is when data values become unpredictable because two or more threads are writing to the same variable.
 
-2. What is a __critical s*e*ction?__
+2. What is a __critical section?__
 
 ##### Answer
 > That is the segment of code where the data race is happening
 
-3. If two or mor*e* __thr*e*ads__ ar*e* r*e*ading th*e* valu*e* at th*e* sam*e* tim*e* is that a __data rac*e*__?
+3. If two or more __Threads__ are reading the value at the same time is that a __data race__?
 
 ##### Answer
 > No
 
-4. Can th*e* compil*e*r h*e*lp spot __data rac*e*s__?
+4. Can the compiler help spot __data Races__?
 
 ##### Answer
 > -g -fsanitize=thread
 
-5. Why ar*e* __data rac*e*s__ bad?
+5. Why are __data Races__ bad?
 
 #### Answer
 > Because they lead to undefined behaviour 
-
-##### Do you see a **data race** in this code?
 
 ```C
 // example code
@@ -331,7 +395,10 @@ int	main()
 	return (0);
 }
 ```
-##### Where there a **critical section**?
+##### Can you answer thes qestions:
+1. Do you see a *data race* in this code?
+2. Where there a **critical section**?
+
 #### Answer
 ```C
 		if ((int )ptr > 1000)
@@ -341,11 +408,11 @@ int	main()
 			break ;
 		index++;
 ```
-## L*e*t's talk mut*e*x*e*s
+## Let's talk Mutexes
 
-Th*e* solution to __data rac*e*s__ can b*e* __mut*e*x*e*s__. Wh*e*n a __mut*e*x__ is us*e*d it *e*nsur*e*s that only on*e* __thr*e*ad__ can acc*e*ss a pi*e*c*e* of cod*e* at a tim*e*. Mutual *e*xclusion.
+The solution to __data Races__ can be __Mutexes__. When a __mutex__ is used it ensures that only one __Thread__ can access a piece of code at a time. Mutual exclusion.
 
-#### Allow*e*d functions
+#### Allowed functions
 ```C
 #include <pthread.h>
 
@@ -358,85 +425,151 @@ int	pthread_mutex_init(pthread_mutex_t mutex, const pthread_mutexattr_t attr);
 int	pthread_mutex_destroy(pthread_mutex_t mutex);
 ```
 
-For r*e*f*e*r*e*nc*e* This is how the __pthr*e*ad_mut*e*x_t data__ typ*e* looks lik*e*.
+For reference This is how the `pthread_mutex_t` __data__ type looks like.
 
 ```C
 struct _opaque_pthread_mutex_t {
   long __sig;
-  char __opaque[__PTHREAD_MUTEX_SIZE__];
+  char __opaque[__PTHREAD_mutex_SIZE__];
 };
 ```
 
-1. What is th*e* __pthr*e*ad_mut*e*x_t data__ typ*e*?
+1. What is the `pthread_mutex_t` __data__ type?
 
 #### Answer
 > It is a data type that you can lock.
 
-### pthread_mutex_init
+### `pthread_mutex_init`
+##### Explination:
+Just as the name suggest `pthread_mutex_init` will initialize a mutex.
+##### Example:
+```C
+#include <pthread.h>
+
+int main()
+{
+	pthread_mutex_t mutex;
+
+	pthread_mutex_init(&mutex, NULL);
+	return (0);
+}
+```
+##### Can you answer these qestions?
 1. What does this function do?
 #### Answer
-> it make a mutex lockable, allocates resources for the mutex
+> it make a Mutex lockable, allocates resources for the Mutex
 ```C
 struct _opaque_pthread_mutex_t {
   long __sig; //it changes this value 
-  char __opaque[__PTHREAD_MUTEX_SIZE__];
+  char __opaque[__PTHREAD_mutex_SIZE__];
 };
 ```
 
-2. Why do w*e* n*ee*d to init a mut*e*x?
+2. Why do we need to init a mutex?
 
 #### Answer
-> because it alows for the mutex to be locked
+> because it alows for the Mutex to be locked
 
-### pthread_mutex_destroy
-1.What does this function do?
-> it makes a mutex not lockable, deallocates resources for the mutex
+### `pthread_mutex_destroy`
+Explination:
+Just as the name suggest `pthread_mutex_destroy` will destroy a mutex.
+##### Example:
+
+```C
+#include <pthread.h>
+
+int main()
+{
+	pthread_mutex_t mutex;
+
+	pthread_mutex_destroy(&mutex);
+	return (0);
+}
+```
+##### Can you answer these qestions?
+
+1. What does this function do?
+> it makes a Mutex not lockable, deallocates resources for the Mutex
 #### Answer
 
 ```C
 struct _opaque_pthread_mutex_t {
   long __sig; //it changes this to 0
-  char __opaque[__PTHREAD_MUTEX_SIZE__];
+  char __opaque[__PTHREAD_mutex_SIZE__];
 };
 ```
 
-2. Do you hav*e* to fr*ee* th*e* mut*e*x?
+2. Do you have to `free` the mutex?
 #### Answer
 > No!
 
-3. Do you n*ee*d to d*e*stroy init*e*d mut*e*x*e*s?
+3. Do you need to destroy inited mutexes?
 #### Answer
-> Yes and no, it is considered a good practice and it helps to spot bugs. It does not cause memory leaks on our systems or take up resources, I belive.
+> Yes and no, it is considered a good practice and it helps to spot bugs. It does not cause memory leaks on our systems or take up resources, I believe./*it does however, make the program stop in the wrong way, its why we join and then destroy*
 
 4. Can a locked mutex be destroyed?
 #### Answer
 > No and errno will be set to EBUSY
 
-### pthread_mutex_lock
+### `pthread_mutex_lock`
+##### Explination:
+Just as the name suggest `pthread_mutex_lock` will do the magic of fixing the data race.
+##### Example:
+```C
+#include <pthread.h>
+
+int main()
+{
+	pthread_mutex_t mutex;
+
+	pthread_mutex_lock(&mutex);
+	return (0);
+}
+```
+##### Can you answer these qestions:
+
 1. What does this function do?
 
 #### Answer
-> It locks a **mutex**. No other **threads** can access this block of code.  
+> It locks a *mutex**. No other **threads** can access this block of code.  
 
-2. Can you lock a mut*e*x 2 tim*e*s?
+2. Can you lock a mutex 2 times?
 
 #### Answer
-> No all the other threads will be waiting to for the mutex till it is onlocked.
+> No all the other threads will be waiting to for the Mutex till it is unlocked.
 
-3. Why do w*e* n*ee*d to lock mut*e*x*e*s?
-> Because we want to limit the segment of code accessible to only 1 thread hence stop data race
+3. Why do we need to lock Mutexes?
+> Because we want to limit the segment of code accessible to only 1 thread hence stop data race.
+/* we don't want to have a variable be used by two threads at the same time, due to a problem caused in the memory. when we have two thread and both use a variable and for example increase both of them. them instead of having done two increases, you isntead have done one increase"*/
 
-### pthread_mutex_unlock
+### `pthread_mutex_unlock`
+##### Explination:
+Just as the name suggest `pthread_mutex_unlock`, will unlock a thread making the lock unlocked means that other threads will be able to lock it so that other threads will be able to prevent data races!
+##### Example:
+```C
+#include <pthread.h>
+
+int main()
+{
+	pthread_mutex_t mutex;
+
+	pthread_mutex_unlock(&mutex);
+	return (0);
+}
+```
+
+##### Can you answer these qestions:
+
 1. What does this function do?
 #### Answer
-> Unlocks a mutex. All threads can now access the code block.
+> Unlocks a Mutex. All threads can now access the code block.
 
-2. Why do w*e* n*ee*d to unlock mut*e*x*e*s?
+2. Why do we need to unlock Mutexes?
 #### Answer
 > Because we want to give access to all the threads to a segment of code
 
-## Goal 🎯
-Make a program that inits, locks, unlock and destroys a mutex!
+## Can you code this? 🎯
+Make a program that inits, locks, unlock and destroys a Mutex!
 
 #### Answer
 ```C
@@ -454,9 +587,9 @@ int	main()
 }
 ```
 
-## Goal 🎯
+## Can you code this? 🎯
 
-Pr*e*v*e*nt th*e* data rac*e* in th*e* *e*xampl*e* cod*e*.
+Prevent the data race in the example code.
 ```C
 // example code
 #include <stdio.h>
@@ -551,16 +684,22 @@ int	main()
 
 
 ## Deadlocks
+##### Explination:
+Deadlock is a state in a programm where all the available mutexes have been locked, thou more and more threads are trying to lock more mutexes in result the programm hangs.
 
-1. What is a **deadlock**?
+##### Can you answer these qestions?
+
+1. What is a **Deadlock**?
 #### Answer
-a dead lock is when the programm hangs because it tries to lock a mutex that is already lock and will never be unlocked
-2. When does a **deadlock** occur?
+> A Deadlock is when the programm hangs because it tries to lock a Mutex that is already lock and will never be unlocked.
+2. When does a **Deadlock** occur?
 #### Answer
-when u do not unlock a mutex
+> when u do not unlock a Mutex /* in principle, you have a wiating list of people waiting for the mutex to open. so the program will wait endlessly until > > the mutex is unlocked. it is not like it checks if its available, it waits until its available*/
 ## Goal:
 
-Produce a program that has a deadlock.
+## Can you code this? 🎯
+
+Produce a program that has a Deadlock.
 
 ### Answer
 
@@ -581,7 +720,7 @@ int	main()
 ```
 
 ## Why not use threads?
-It seams that having more threads would speed things up, but it's not always the case.
+It seems that having more threads would speed things up, but it's not always the case.
 Bellow, 2 programs add up to INT_MAX / 100. One uses 20 **threads** and one uses just one. Which will be faster?
 
 ```C
@@ -659,10 +798,26 @@ int	main()
 	printf("%d\n", x);
 }
 ```
-## Goal
+
+## Can you code this? 🎯
 compile both programms and use `time ./a.out` to see which is faster
 
-## Goal:
+#### Allowed functions
+
+```C
+#include <pthread.h>
+#include <stdio.h>
+
+int	pthread_mutex_lock(pthread_mutex_t mutex);
+int	pthread_mutex_unlock(pthread_mutex_t mutex);
+int	pthread_mutex_init(pthread_mutex_t mutex, const pthread_mutexattr_t attr);
+int	pthread_mutex_destroy(pthread_mutex_t mutex);
+int	pthread_create(pthread_t thread, const pthread_attr_t attr, void (start_routine)(void ), void arg);
+int	pthread_join(pthread_t thread, void value_ptr);
+int	printf(const char  restrict format, ...);
+```
+
+## Can you code this? 🎯
 creat 20 threads that will print the following
 the order does not matter
 
@@ -736,7 +891,7 @@ int	main()
 
 # Bonus
 
-Make a program that will use 3 created threads to add up an int to 42. Threads can increment the int every .5sec
+Make a program that will use 3 created threads to add up an int to 42. Threads can increment the int every .5 sec
 once the value is 42 the program has to print "Got it!\n" and exit.
 
 catch:
@@ -808,8 +963,8 @@ Look in to what a scheduler is!
 
 ##### Answer
 > 1. Creating a thread goes 10–100 times faster than creating a process.
-> 2. To shear address space
+> 2. To share address space
 > 3. Performance
 > 4. To work with blocking system calls
 > 5. There is a blocking call
-
+/* to put less strain on the process when you have to perform multiple calculations at the same time. imagine you make a game and for each frame you need to check 100 things. instead of making one process that go's through all of it. you make 100 threads that do them seperatly. because Threads share memory, its the perfect tool to speed up your program, its also perfect because you cna constantly check when things go wrong, instead of having to wait until the end.*/
