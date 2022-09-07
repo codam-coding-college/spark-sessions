@@ -6,7 +6,7 @@
 /*   By: W2Wizard <W2Wizard@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/09/06 14:20:06 by fbes          #+#    #+#                 */
-/*   Updated: 2022/09/06 14:22:15 by W2Wizard      ########   odam.nl         */
+/*   Updated: 2022/09/07 11:04:37 by W2Wizard      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ if (!fs.existsSync(MTPDdir))
 
 // Pull and build
 console.log(execSync('git submodule update --init --recursive').toString())
-console.log(execSync('npm install && npm run build', { cwd: MTPDFdir }).toString())
+console.log(execSync('npm install && npm run build', { cwd: MTPDdir }).toString())
 
 // Find all the directories with the markdown files in them
 const dirs = execSync(`find spark-session -name 'SparkSession*.md'`).toString().trimEnd()
