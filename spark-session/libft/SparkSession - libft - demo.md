@@ -7,7 +7,8 @@
 1. Introduction
 2. Project structure & Information
 3. Importance of testing
-4. Practice
+4. How to Makefile
+5. Putting it into practice
 
 ## Introduction
 
