@@ -9,11 +9,11 @@ Project description:
 
 ## Topics
 
-1. Introduction
-2. Information gathering
-3. Makefiles
-4. Importance of testing
-5. Putting it into practice
+1. **Introduction**
+2. **Information gathering**
+3. **Hitch hiker's guide to Makefiles**
+4. **Importance of testing**
+5. **Putting it into practice**
 
 ## Introduction
 
@@ -78,17 +78,24 @@ So in this chapter we will focus creating a Makefile that will take a `.c` file 
 1. Start with looking for a good source of documentation regarding makefiles:
 
    - What are `recipes`, `rules`, `targets`?
+
      - Should we create a `recipe` for each file or make a generic case for our `.c` files?
+
    - What is `.PHONY`? Why is it important / useful to have ?
    - What is relinking and how do we prevent it?
      - Why should we prevent this ?
 
 2. Lets do something practical now:
+
    - Create the following files `main.c` & `ft_putstr.c`.
+
      - Simply write a small program that uses the `ft_putstr()` function in the respective file.
+
    - Create the necessary instructions in your `Makefile` to:
+
      - Compile each file into a `.o` file.
      - Links them into an executable.
+
    - Also implement the required `recipes`:
    - `all`: Compiles all the files.
    - `re`: Re-compiles the files.
@@ -98,8 +105,28 @@ So in this chapter we will focus creating a Makefile that will take a `.c` file 
 
 ### Importance of testing
 
-- What is it that people are struggling with here ? Makefiles ? Malloc ?
-- Testing their functions.
+Of course we should ensure that the code we write actually does what it is supposed to do.
+For instance a `ft_putstr()` that results in a segfault when you use it doesn't sound like a thing
+that should happen.
+
+However with larger projects and many files, functions and all the likes working together it becomes
+harder and harder to make sure that what we wrote actually works. Testing is therefor the cure to not result in a heap of problems in the end.
+
+You can go **really** deep in terms of testing all the way from automatic test checking
+before commiting, to scheduled testing on **github** or on a remote server. Even to the method of
+testing there are many angles. We encourage you to explore all the different possibilites, as the
+more tests you do, the fewer bugs and issues you will have later.
+
+1. As group discuss the following:
+
+   - What types of test should one do ?
+   - Should we test our functions as we write them ?
+     - Does doing this actually benefit us ?
+     - What about the amount of time spent coding vs testing ?
+   - Do we do our tests only once we're done with our project?
+
+2. Time to get practical again:
+   - TODO: Some sort of exercise.
 
 ### Putting it into practice
 
