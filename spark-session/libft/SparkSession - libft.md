@@ -20,15 +20,15 @@ This project is about coding a C library. It will contain a lot of general purpo
 In case this is your first spark session then a warm welcome!
 You might ask yourself: "What is a spark session? What is the point?"
 
-A spark session simply serves as a way of achieving that 'spark' for solving on how to complete a certain project. It's goal is not a step-by-step guide / tutorial on how to complete the project.
+A spark session simply serves as a way of achieving that initial 'spark' for solving on how to complete a certain project. It's goal is not a step-by-step guide / tutorial on how to complete the project.
 
 They main goal is to teach you self sufficiency by showing and giving you tasks that encourage peer-to-peer interactions as well as being able to find the answer on your own.
 
-To achieve this a spark sessions composes of bite sized objectives that should help you give an easy footing into solving problems. Additionally Spark sessions are a hand-on approach with peer-to-peer in mind, so you will form in groups of 2-3 to work together and solve the following problems.
+To achieve this, a spark session composes of bite sized objectives that should help you give an easy footing into solving certain problems. Additionally, spark sessions are a hand-on approach with peer-to-peer in mind, so you will form in groups of 2-3 to work together and solve the following problems.
 
-During the spark-session a moderators purpose is to clear up confusion and work with the students in answering some but not all questions. They are much like C.A.T's in a way that they can help you with some technical stuff but not with actually solving the problems.
+During the spark-session the moderator's purpose is to clear up confusion and work with the students in answering some but not all questions. They are much like C.A.T's in a way that they can help you with some technical stuff but not with actually solving the problems.
 
-_NOTE: If you have any questions at any stage, ask your peers or the session moderator!_
+_NOTE: When given an exercise each person should do their own work, however work together to solve problems!_
 
 ---
 
@@ -38,9 +38,9 @@ _NOTE: If you have any questions at any stage, ask your peers or the session mod
 
 ### Information gathering
 
-One of the most imporant things in programming is to find information, documentaiton answers in a anyway shape or form to find out how to solve your problem. Another challenge is to formulate your problems into a meaningful query not just for `google` but also to your peers.
+One of the most imporant things in programming is to find information. Usually you will encounter problems with quite the lack of documenation others with an abundance of information. Another challenge is to formulate your problems into a meaningful query not just for a search engine, but also to your peers.
 
-So to begin with this idea do the following with your peers:
+So to start of easy, lets look into the following problems, work together in order to find the answers. You are free to share them with others!
 
 - Research and solve the following with your peers:
   - Passing `0` to `malloc`
@@ -65,9 +65,7 @@ With the end of the first chapter you should now have some understanding as to h
 Now that we have some way of figuring out our problems lets take our first dip into
 doing some actual useful research. Makefiles!
 
-Makefiles let us build our C Projects in a much more convenient way than manually typing
-`gcc -Wextra -Werror -Wall ...` for each file. However their syntax and features are somewhat
-tricky for beginners and numerous.
+Makefiles lets us build our C Projects in a much more convenient way than manually typing `gcc -Wextra -Werror -Wall ...` for each file. However their syntax and features are somewhat tricky for beginners and numerous.
 
 So in this chapter we will focus creating a Makefile that will take a `.c` file and compile it into a `42.out` executable.
 
@@ -125,9 +123,9 @@ more tests you do, the fewer bugs and issues you will have later. But is that al
 
 ### Putting it into practice
 
-Its time we combine everything we learned into a singular library, your very own `lib-minift`!
+Its time we combine everything we learned into a singular library, your very own `mini-libft`!
 
-Your goal now is a mix of practical and research exercises, for you `lib-minift` you must research
+Your goal now is a mix of practical and research exercises, for you `mini-libft` you must research
 the `libc` equivalent functions and implement their behaviour. Once you implemented those functions
 you should test those functions.
 
@@ -144,7 +142,7 @@ So we will not go crazy here and keep it simple. Later on you can look into how 
 2. Create test cases for each function:
    - For testing, simply write a function that runs your own version and prints out the difference with the `libc` equivalent.
    - Making it easy and convenient to execute these tests and the rule `make test` that compiles a `test.c` file.
-     - Make sure to compile this file with your `lib-minift` library file.
+     - Make sure to compile this file with your `mini-libft` library file.
      - This file should have a `main()` function that runs your test functions.
    - Implement as many test cases as you deem necessary.
    - If something doesn't match, fix it and run `make test` again!
